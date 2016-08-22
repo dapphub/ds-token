@@ -1,10 +1,18 @@
 import 'dapple/test.sol';
-import 'factory.sol';
-import 'token_test.sol';
-import 'token.sol';
-import 'erc20.sol';
 
-contract DSTokenBasicSystemTest is TestFactoryUser, DSTokenTest, ERC20Events {
+import 'ds-auth/util.sol';
+import 'ds-auth/basic_authority.sol';
+
+import 'erc20/erc20.sol';
+import 'erc20/base_test.sol';
+
+import 'factory.sol';
+import 'token.sol';
+
+contract DSTokenBasicSystemTest is ERC20Test
+                                 , ERC20Events
+                                 , DSAuthUser
+{
     DSTokenFactory factory;
     DSBasicAuthority auth;
 
@@ -13,12 +21,12 @@ contract DSTokenBasicSystemTest is TestFactoryUser, DSTokenTest, ERC20Events {
     DSTokenController controller;
     DSTokenFrontend frontend;
 
-    function createToken() internal returns (DSToken) {
+    function createToken() internal returns (ERC20) {
         factory = new DSTokenFactory();
-        auth = factory.buildDSBasicAuthority();
+        auth = new DSBasicAuthority();
         auth.updateAuthority(address(factory), DSAuthModes.Owner);
         frontend = factory.installDSTokenBasicSystem(auth);
-        return frontend;
+        return ERC20(frontend);
     }
 
     function setUp() {
@@ -96,25 +104,25 @@ contract DSTokenBasicSystemTest is TestFactoryUser, DSTokenTest, ERC20Events {
 
 
     // Functionality directly on the controller
-    function testAllowanceStartsAtZero() logs_gas {
+    function testAllowanceStartsAtZero() {
         assertEq(controller.allowance(user1, user2), 0);
     }
 
-    function testBalanceOfStartsAtZero() logs_gas {
+    function testBalanceOfStartsAtZero() {
         assertEq(controller.balanceOf(user1), 0);
     }
 
-    function testBalanceOfReflectsTransfer() logs_gas {
+    function testBalanceOfReflectsTransfer() {
         uint sentAmount = 250;
         controller.transfer(this, user1, sentAmount);
         assertEq(controller.balanceOf(user1), sentAmount);
     }
 
-    function testTotalSupply() logs_gas {
+    function testTotalSupply() {
         assertEq(controller.totalSupply(), initialBalance);
     }
 
-    function testControllerValidTransfers() logs_gas {
+    function testControllerValidTransfers() {
         uint sentAmount = 250;
         controller.transfer(this, user1, sentAmount);
         controller.transfer(user1, user2, sentAmount);
@@ -123,7 +131,7 @@ contract DSTokenBasicSystemTest is TestFactoryUser, DSTokenTest, ERC20Events {
         assertEq(controller.balanceOf(this), initialBalance - sentAmount);
     }
 
-    function testControllerValidTransferFrom() logs_gas {
+    function testControllerValidTransferFrom() {
         uint sentAmount = 250;
         controller.transfer(this, user1, sentAmount);
         controller.approve(user1, this, sentAmount);
@@ -146,37 +154,37 @@ contract DSTokenBasicSystemTest is TestFactoryUser, DSTokenTest, ERC20Events {
         controller.approve(this, user1, sentAmount);
     }
 
-    function testFailControllerUnapprovedTransferFrom() logs_gas {
+    function testFailControllerUnapprovedTransferFrom() {
         uint sentAmount = 250;
         controller.transfer(this, user1, sentAmount);
         controller.transferFrom(this, user1, user2, sentAmount);
     }
 
-    function testFailControllerInsufficientFundsTransfer() logs_gas {
+    function testFailControllerInsufficientFundsTransfer() {
         uint sentAmount = 250;
         controller.transfer(this, user1, initialBalance);
         controller.transfer(user1, user2, initialBalance+1);
     }
 
-    function testFailControllerInsufficientFundsTransferFrom() logs_gas {
+    function testFailControllerInsufficientFundsTransferFrom() {
         uint sentAmount = 250;
         controller.transfer(this, user1, sentAmount);
         controller.approve(user1, user2, sentAmount + 1);
         controller.transferFrom(user2, user1, user2, sentAmount + 1);
     }
 
-    function testControllerApproveSetsAllowance() logs_gas {
+    function testControllerApproveSetsAllowance() {
         controller.approve(user1, user2, 25);
         assertEq(controller.allowance(user1, user2), 25,
                  "wrong allowance");
     }
 
-    function testFailControllerTransferFromWithoutApproval() logs_gas {
+    function testFailControllerTransferFromWithoutApproval() {
         controller.transfer(this, user1, 50);
         controller.transferFrom(this, user1, user2, 1);
     }
 
-    function testFailControllerChargeMoreThanApproved() logs_gas {
+    function testFailControllerChargeMoreThanApproved() {
         controller.transfer(this, user1, 50);
         controller.approve(user1, this, 20);
         controller.transferFrom(this, user1, user2, 21);

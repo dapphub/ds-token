@@ -1,19 +1,20 @@
 // An implementation of ERC20 with updateable databases contracts and a frontend
 // interface.
 import 'ds-auth/auth.sol';
+import 'erc20/erc20.sol';
+
 import 'data/approval_db.sol';
 import 'data/balance_db.sol';
-import 'erc20.sol';
 import 'event_callback.sol';
 import 'frontend.sol';
 import 'token.sol';
 
 import 'util/safety.sol';
 
-// Does NOT implement ERC20.
+// Does NOT implement ERC20, but does happen implement the constant getters
 // The frontend contract passes the msg.sender through as caller for some functions.
 // This controller calls back into the frontend to fire events.
-contract DSTokenControllerType is ERC20Stateless
+contract DSTokenControllerType is ERC20Constant
                                 , DSSafeAddSub
                                 , DSAuthUser
 {
