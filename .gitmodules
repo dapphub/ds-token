@@ -1,0 +1,6 @@
+[submodule "dapple_packages/ds-auth"]
+	path = dapple_packages/ds-auth
+	url = https://github.com/nexusdev/ds-auth
+[submodule "dapple_packages/erc20"]
+	path = dapple_packages/erc20
+	url = https://github.com/nexusdev/erc20
