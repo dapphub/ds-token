@@ -1,7 +1,7 @@
 // Attach to your balance DB to have a way for system contracts to print/burn
 // tokens for themselves.
 
-import 'auth.sol';
+import 'ds-auth/auth.sol';
 import 'data/balance_db.sol';
 
 contract DSTokenSupplyManager is DSAuth

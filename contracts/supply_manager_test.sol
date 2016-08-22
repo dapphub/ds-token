@@ -1,9 +1,10 @@
 import 'dapple/test.sol';
 
-import 'auth.sol';
-import 'auth/basic_authority.sol';
+import 'ds-auth/auth.sol';
+import 'ds-auth/basic_authority.sol';
 import 'data/balance_db.sol';
-import 'token/supply_manager.sol';
+
+import 'supply_manager.sol';
 
 // Used by maker-core
 contract TestTokenSupplyManager is DSTokenSupplyManager

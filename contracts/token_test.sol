@@ -1,9 +1,8 @@
-import 'auth.sol';
 import 'dapple/test.sol';
 import 'dapple/debug.sol';
-import 'token/base.sol';
-import 'factory/factory.sol';
-import 'factory/factory_test.sol';
+import 'ds-auth/auth.sol';
+import 'erc20/base.sol';
+import 'factory.sol';
 
 // Supporting classes
 
@@ -55,7 +54,7 @@ contract DSTokenTest is Test, DSAuthUser {
     }
 
     function createToken() internal returns (DSToken) {
-        return new DSTokenBase(initialBalance);
+        return new ERC20Base(initialBalance);
     }
 
     function testSetupPrecondition() {

@@ -1,10 +1,11 @@
 import 'dapple/test.sol';
-import 'factory/factory_test.sol';
-import 'token/token_test.sol';
-import 'token/token.sol';
-import 'token/erc20.sol';
+import 'factory.sol';
+import 'token_test.sol';
+import 'token.sol';
+import 'erc20.sol';
 
 contract DSTokenBasicSystemTest is TestFactoryUser, DSTokenTest, ERC20Events {
+    DSTokenFactory factory;
     DSBasicAuthority auth;
 
     DSBalanceDB balanceDB;
@@ -13,6 +14,7 @@ contract DSTokenBasicSystemTest is TestFactoryUser, DSTokenTest, ERC20Events {
     DSTokenFrontend frontend;
 
     function createToken() internal returns (DSToken) {
+        factory = new DSTokenFactory();
         auth = factory.buildDSBasicAuthority();
         auth.updateAuthority(address(factory), DSAuthModes.Owner);
         frontend = factory.installDSTokenBasicSystem(auth);

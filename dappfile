@@ -5,4 +5,5 @@ layout:
   sol_sources: contracts
   build_dir: build
 dependencies: {}
-ignore: []
+ignore:
+    - registry*

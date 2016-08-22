@@ -1,12 +1,12 @@
 // An implementation of ERC20 with updateable databases contracts and a frontend
 // interface.
-import 'auth.sol';
+import 'ds-auth/auth.sol';
 import 'data/approval_db.sol';
 import 'data/balance_db.sol';
-import 'token/erc20.sol';
-import 'token/event_callback.sol';
-import 'token/frontend.sol';
-import 'token/token.sol';
+import 'erc20.sol';
+import 'event_callback.sol';
+import 'frontend.sol';
+import 'token.sol';
 
 import 'util/safety.sol';
 
