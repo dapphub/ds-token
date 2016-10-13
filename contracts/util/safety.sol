@@ -1,3 +1,5 @@
+pragma solidity ^0.4.2;
+
 contract DSSafeAddSub {
     function safeToAdd(uint a, uint b) internal returns (bool) {
         return (a + b >= a);
