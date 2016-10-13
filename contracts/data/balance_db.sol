@@ -1,3 +1,5 @@
+pragma solidity ^0.4.2;
+
 // Balance database contract for Tokens and token-like contracts.
 
 import 'ds-auth/auth.sol';

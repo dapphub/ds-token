@@ -1,3 +1,5 @@
+pragma solidity ^0.4.2;
+
 import 'data/balance_db.sol';
 import 'dapple/test.sol';
 

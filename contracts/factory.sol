@@ -1,3 +1,5 @@
+pragma solidity ^0.4.2;
+
 import 'ds-auth/basic_authority.sol';
 import 'data/balance_db.sol';
 import 'data/approval_db.sol';

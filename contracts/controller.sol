@@ -1,3 +1,5 @@
+pragma solidity ^0.4.2;
+
 // An implementation of ERC20 with updateable databases contracts and a frontend
 // interface.
 import 'ds-auth/auth.sol';

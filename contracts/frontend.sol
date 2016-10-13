@@ -1,3 +1,5 @@
+pragma solidity ^0.4.2;
+
 // Static proxy for Tokens. Allows you to give a single address to
 // UI devs, but requires your dapp to manage controller updates
 // at the contract level.

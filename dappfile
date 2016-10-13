@@ -4,6 +4,12 @@ tags: []
 layout:
   sol_sources: contracts
   build_dir: build
+  packages_directory: dapple_packages
 dependencies: {}
 ignore:
-    - registry*
+  - registry*
+dapple_version: 0.8.8
+environments:
+  develop:
+    objects: {}
+    type: internal
