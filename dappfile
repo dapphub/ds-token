@@ -1,9 +1,15 @@
 name: ds-token
-version: 0.0.1-dev
+version: 0.0.2-dev
 tags: []
 layout:
-  sol_sources: contracts
+  sol_sources: src
   build_dir: build
+  packages_directory: .dapple/packages
 dependencies: {}
 ignore:
-    - registry*
+  - registry*
+dapple_version: 0.8.9
+environments:
+  develop:
+    objects: {}
+    type: internal

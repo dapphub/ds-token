@@ -1,6 +1,5 @@
 import 'dapple/test.sol';
 
-import 'ds-auth/util.sol';
 import 'ds-auth/basic_authority.sol';
 
 import 'erc20/erc20.sol';
@@ -11,7 +10,7 @@ import 'token.sol';
 
 contract DSTokenBasicSystemTest is ERC20Test
                                  , ERC20Events
-                                 , DSAuthUser
+                                 , DSAuthEvents
 {
     DSTokenFactory factory;
     DSBasicAuthority auth;
