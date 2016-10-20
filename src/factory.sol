@@ -4,13 +4,13 @@ import 'data/approval_db.sol';
 import 'frontend.sol';
 import 'controller.sol';
 
-contract DSTokenFactory is DSAuthUser {
+contract DSTokenFactory {
     function buildDSBalanceDB()
         external
         returns (DSBalanceDB) 
     {
         var bdb = new DSBalanceDB();
-        setOwner( bdb, msg.sender );
+		bdb.setOwner( msg.sender );
         return bdb;
     }
     function buildDSApprovalDB()
@@ -18,7 +18,7 @@ contract DSTokenFactory is DSAuthUser {
         returns (DSApprovalDB)
     {
         var adb = new DSApprovalDB();
-        setOwner( adb, msg.sender );
+        adb.setOwner( msg.sender );
         return adb;
     }
     function buildDSTokenController( DSTokenFrontend frontend
@@ -28,7 +28,7 @@ contract DSTokenFactory is DSAuthUser {
              returns (DSTokenController)
     {
         var controller = new DSTokenController( frontend, bal_db, appr_db );
-        setOwner( controller, msg.sender );
+ 		controller.setOwner( msg.sender );
         return controller;
     }
     function buildDSTokenFrontend()
@@ -36,7 +36,7 @@ contract DSTokenFactory is DSAuthUser {
              returns (DSTokenFrontend)
     {
         var frontend = new DSTokenFrontend();
-        setOwner( frontend, msg.sender );
+		frontend.setOwner(msg.sender);
         return frontend;
     }
     function installDSTokenBasicSystem( DSBasicAuthority authority )
@@ -48,11 +48,11 @@ contract DSTokenFactory is DSAuthUser {
         var controller = this.buildDSTokenController( frontend, balance_db, approval_db );
 
         frontend.setController( controller );
-
-        setAuthority( balance_db, authority );
-        setAuthority( approval_db, authority );
-        setAuthority( controller, authority );
-        setAuthority( frontend, authority );
+		
+		balance_db.setAuthority(authority);
+		approval_db.setAuthority(authority);
+		controller.setAuthority(authority);
+		frontend.setAuthority(authority);
 
         // The only data ops the controller does is `move` balances and `set` approvals.
         authority.setCanCall( controller, balance_db,
@@ -76,7 +76,7 @@ contract DSTokenFactory is DSAuthUser {
         authority.setCanCall( frontend, controller,
                              bytes4(sha3("approve(address,address,uint256)")), true );
 
-        setOwner( authority, msg.sender);
+		authority.setOwner(msg.sender);
         return frontend;
     }
 }
