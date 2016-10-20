@@ -28,11 +28,11 @@ contract DSBalanceDB_Test is DSBalanceDBEvents, Test {
     }
     function testAddBalance() tests("addBalance") {
         expectEventsExact(db);
-//        BalanceUpdate(me, 100);
+        BalanceUpdate(me, 100);
 
-//        db.addBalance(me, 100);
-//        var bal = db.getBalance(me);
-//        assertEq(100, bal, "wrong balance after add");
+        db.addBalance(me, 100);
+        var bal = db.getBalance(me);
+        assertEq(100, bal, "wrong balance after add");
     }
     function testSubBalance() tests("subBalance") {
         expectEventsExact(db);
