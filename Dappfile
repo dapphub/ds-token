@@ -1,0 +1,10 @@
+version: 0.0.1-dev
+tags: []
+layout:
+  sol_sources: src
+  build_dir: build
+  packages_directory: .dapple/packages/
+dependencies: {}
+ignore:
+  - registry*
+name: ds-token
