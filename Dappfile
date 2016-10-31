@@ -8,3 +8,12 @@ dependencies: {}
 ignore:
   - registry*
 name: ds-token
+dapple_version: 0.8.20
+environments:
+  morden:
+    objects:
+      factory:
+        value: '0x54ee5e1c18297b1eab8c63d52de3721dedfa5698'
+        type: >-
+          DSTokenFactory[07dbb81c6577593a74e7b1c7a419edad31c2977ace714935d11b6c8fe04c1775]
+    type: MORDEN
