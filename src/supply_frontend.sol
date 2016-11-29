@@ -24,16 +24,26 @@ import "./supply_controller.sol";
 
 contract DSTokenSupplyFrontend is DSAuth {
     DSTokenSupplyController _controller;
-    function DSTokenController(DSTokenSupplyController controller) {
+    function DSTokenController( DSTokenSupplyController controller ) {
         setSupplyController(controller);
     }
-    function setSupplyController(DSTokenSupplyController controller) {
+    function setSupplyController(DSTokenSupplyController controller)
+        auth
+    {
         _controller = controller;
     }
-    function print(uint amount) {
+    event LogPrint(address indexed caller, uint amount);
+    event LogBurn(address indexed caller, uint amount);
+    // TODO use `emit` pattern?
+    function print(uint amount)
+    {
         _controller.demand(msg.sender, amount);
+        LogPrint(msg.sender, amount);
     }
-    function burn() {
-        _controller.destroy(this, _controller.balanceOf(this));
+    function burn()
+    {
+        var amount = _controller.balanceOf(this);
+        _controller.destroy(this, amount);
+        LogBurn(msg.sender, amount);
     }
 }
