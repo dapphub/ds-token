@@ -39,6 +39,8 @@ contract DSTokenSupplyControllerTest is Test, DSAuthEvents {
           manager, db, bytes4(sha3('addBalance(address,uint256)')), true);
         authority.setCanCall(
           manager, db, bytes4(sha3('subBalance(address,uint256)')), true);
+        authority.setCanCall(
+          manager, db, bytes4(sha3('setBalance(address,uint256)')), true);
 
         manager.setAuthority(authority);
         authority.setCanCall(
@@ -68,5 +70,10 @@ contract DSTokenSupplyControllerTest is Test, DSAuthEvents {
       assertEq(db.getBalance(this), 1);
       assertEq(db.getBalance(manager), 0);
       assertEq(db.getSupply(), 1);
+      
+      manager.demand(manager, 10);
+      assertEq(db.getBalance(manager), 10);
+      manager.destroy();
+      assertEq(db.getBalance(manager), 0);
     }
 }

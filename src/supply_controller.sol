@@ -54,4 +54,8 @@ contract DSTokenSupplyController is DSAuth
     {
         _db.subBalance(from_whom, amount);
     }
+    function destroy()
+    {
+        _db.setBalance(this, 0);
+    }
 }
