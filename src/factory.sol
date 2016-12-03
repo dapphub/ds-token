@@ -1,12 +1,38 @@
-pragma solidity ^0.4.2;
+// This factory contains several useful token system install patterns.
+// You may want to create your own.
+
+// Copyright 2016  Nexus Development, LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// A copy of the License may be obtained at the following URL:
+//
+//    https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+pragma solidity ^0.4.6;
 
 import 'ds-auth/basic_authority.sol';
 import 'data/balance_db.sol';
 import 'data/approval_db.sol';
+import 'data/composite_db.sol';
 import 'frontend.sol';
 import 'controller.sol';
 
 contract DSTokenFactory {
+    function buildDSTokenDB()
+        external
+        returns (DSTokenDB)
+    {
+        var db = new DSTokenDB();
+        db.setOwner( msg.sender );
+        return db;
+    }
     function buildDSBalanceDB()
         external
         returns (DSBalanceDB) 
@@ -33,6 +59,19 @@ contract DSTokenFactory {
  		controller.setOwner( msg.sender );
         return controller;
     }
+    function buildBlankTokenSystem() returns (DSTokenFrontend frontend)
+    {
+        frontend = this.buildDSTokenFrontend();
+        var db = this.buildDSTokenDB();
+        var controller = this.buildDSTokenController( frontend, db, db );
+
+        db.setOwner(msg.sender);
+        controller.setOwner(msg.sender);
+        frontend.setOwner(msg.sender);
+
+        return frontend;
+    }
+
     function buildDSTokenFrontend()
              external
              returns (DSTokenFrontend)
