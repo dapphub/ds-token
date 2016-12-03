@@ -1,6 +1,6 @@
 [submodule "dapple_packages/ds-auth"]
-	path = .dapple/packages/ds-auth
+	path = lib/ds-auth
 	url = https://github.com/nexusdev/ds-auth
 [submodule "dapple_packages/erc20"]
-	path = .dapple/packages/erc20
+	path = lib/erc20
 	url = https://github.com/nexusdev/erc20
