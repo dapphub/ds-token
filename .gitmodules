@@ -1,6 +1,9 @@
-[submodule "dapple_packages/ds-auth"]
+[submodule "lib/ds-auth"]
 	path = lib/ds-auth
 	url = https://github.com/nexusdev/ds-auth
-[submodule "dapple_packages/erc20"]
+[submodule "lib/ds-data"]
+	path = lib/ds-data
+	url = https://github.com/nexusdev/ds-data
+[submodule "lib/erc20"]
 	path = lib/erc20
 	url = https://github.com/nexusdev/erc20
