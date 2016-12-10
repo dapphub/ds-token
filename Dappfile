@@ -1,14 +1,9 @@
-version: 0.2.0-dev
-tags: []
+name:      ds-token
+version:   0
 layout:
-  sol_sources: src
-  build_dir: build
-  packages_directory: lib
-dependencies: {}
-ignore:
-  - registry*
-name: ds-token
-dapple_version: 0.8.20
+  build_dir:            build
+  packages_directory:   lib
+  sol_sources:          src
 environments:
   morden:
     objects:
