@@ -1,5 +1,5 @@
-import 'data/nullmap.sol';
-import 'token/provider.sol';
+import 'ds-data/nullmap.sol';
+import 'provider.sol';
 
 // Simple registry implementing DSTokenProvider
 contract DSTokenRegistry is DSTokenProvider, DSNullMap {

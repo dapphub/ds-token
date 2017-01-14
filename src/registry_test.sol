@@ -1,16 +1,15 @@
 import 'dapple/test.sol';
-import 'token/registry.sol';
-import 'token/base.sol';
+import 'registry.sol';
 
 contract TokenRegistryTest is Test {
     uint constant issuedAmount = 1000;
 
-    DSTokenBase token;
+    address token;
     DSTokenRegistry registry;
 
     function setUp() {
         registry = new DSTokenRegistry();
-        token = new DSTokenBase(issuedAmount);
+        token = 0x1111111111111111111111111111111111111111;
     }
 
     function testGetToken() {
