@@ -4,3 +4,6 @@
 [submodule "lib/ds-data"]
 	path = lib/ds-data
 	url = https://github.com/nexusdev/ds-data
+[submodule "lib/erc20"]
+	path = lib/erc20
+	url = https://github.com/nexusdev/erc20
