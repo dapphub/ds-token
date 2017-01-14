@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.6;
 
 // An implementation of ERC20 with updateable databases contracts and a frontend
 // interface.

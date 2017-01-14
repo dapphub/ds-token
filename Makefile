@@ -1,1 +1,1 @@
-default:; dapple test
+default:; dapple-quicktest
