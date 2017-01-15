@@ -29,7 +29,7 @@ contract DSFreezableToken is ERC20Base, DSAuth {
         frozen = true;
     }
     modifier freezable() {
-        if( !frozen ) throw;
+        if( frozen ) throw;
         _;
     }
     function transfer( address to, uint value)

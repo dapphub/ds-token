@@ -25,7 +25,8 @@ contract DSIDestroyableToken is ERC20 {
 
 contract DSDestroyableToken is ERC20Base, DSAuth {
     function demand(address who, uint amount)
-        auth {
+        auth
+    {
         if( _balances[who] - amount > _balances[who] ) {
             throw;
         }
