@@ -16,16 +16,35 @@
 
 pragma solidity ^0.4.9;
 
-import 'freezable.sol';
-import 'mintable.sol';
-import 'burnable.sol';
-
-contract DSToken is DSFreezableToken
-                  , DSMintableToken
-                  , DSBurnableToken
-{}
+import 'base.sol';
 
 contract DSToken is DSTokenBase {
+    bool public frozen;
+    // TODO better name
+    function freeze() auth {
+        frozen = true;
+    }
+    modifier freezable() {
+        if( frozen ) throw;
+        _;
+    }
+
+    function transfer( address to, uint value)
+        freezable returns (bool ok)
+    {
+        super.transfer(to, value);
+    }
+    function transferFrom( address from, address to, uint value)
+        freezable returns (bool ok)
+    {
+        super.transferFrom(from, to, value);
+    }
+    function approve(address spender, uint value)
+        freezable returns (bool ok)
+    {
+        super.approve(spender, value);
+    }
+
     function burn(address who, uint amount)
         auth
     {
