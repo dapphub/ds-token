@@ -14,22 +14,14 @@
    limitations under the License.
 */
 
-pragma solidity ^0.4.6;
+pragma solidity ^0.4.2;
 
-import 'erc20/base.sol';
-import 'ds-auth/auth.sol';
+import 'base.sol';
 
-contract DSIDestroyableToken is ERC20 {
-    function demand(address who, uint amount);
-}
-
-contract DSDestroyableToken is ERC20Base, DSAuth {
-    function demand(address who, uint amount)
-        auth
-    {
-        if( _balances[who] - amount > _balances[who] ) {
-            throw;
-        }
-        _balances[who] -= amount;
+contract ERC20BaseFactory {
+    function createERC20Base(uint initial_balance) returns (ERC20Base b) {
+        b = new ERC20Base(initial_balance);
+        b.transfer(msg.sender, initial_balance);
+        return b;
     }
 }

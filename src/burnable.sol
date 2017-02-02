@@ -19,32 +19,17 @@ pragma solidity ^0.4.6;
 import 'erc20/base.sol';
 import 'ds-auth/auth.sol';
 
-contract DSIFreezableToken is ERC20 {
-    function freeze();
+contract DSIBurnableToken is ERC20 {
+    function burn(address who, uint amount);
 }
 
-contract DSFreezableToken is DSTokenBase, DSAuth {
-    bool public frozen;
-    function freeze() auth {
-        frozen = true;
-    }
-    modifier freezable() {
-        if( frozen ) throw;
-        _;
-    }
-    function transfer( address to, uint value)
-        freezable returns (bool ok)
+contract DSBurnableToken is DSTokenBase, DSAuth {
+    function burn(address who, uint amount)
+        auth
     {
-        super.transfer(to, value);
-    }
-    function transferFrom( address from, address to, uint value)
-        freezable returns (bool ok)
-    {
-        super.transferFrom(from, to, value);
-    }
-    function approve(address spender, uint value)
-        freezable returns (bool ok)
-    {
-        super.approve(spender, value);
+        if( _balances[who] - amount > _balances[who] ) {
+            throw;
+        }
+        _balances[who] -= amount;
     }
 }

@@ -16,15 +16,15 @@
 
 pragma solidity ^0.4.6;
 
-import 'erc20/base.sol';
+import 'base.sol';
 import 'ds-auth/auth.sol';
 
-contract DSIDemandableToken is ERC20 {
-    function demand(address who, uint amount);
+contract DSIMintableToken is ERC20 {
+    function mint(address who, uint amount);
 }
 
-contract DSDemandableToken is ERC20Base, DSAuth {
-    function demand(address who, uint amount)
+contract DSMintableToken is DSTokenBase, DSAuth {
+    function mint(address who, uint amount)
         auth
     {
         if( _balances[who] + amount < _balances[who] ) {
