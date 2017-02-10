@@ -17,31 +17,23 @@
 pragma solidity ^0.4.9;
 
 import 'base.sol';
+import 'rules.sol';
 
 contract DSToken is DSTokenBase {
-    bool public frozen;
-    // TODO better name
-    function freeze() auth {
-        frozen = true;
-    }
-    modifier freezable() {
-        if( frozen ) throw;
-        _;
-    }
-
-    function transfer( address to, uint value)
-        freezable returns (bool ok)
+    DSTokenRules _rules;
+    function transfer( address to, uint value) returns (bool ok)
     {
+        if (!_rules.canTransfer(msg.sender, msg,sender, to, value)) throw;
         super.transfer(to, value);
     }
-    function transferFrom( address from, address to, uint value)
-        freezable returns (bool ok)
+    function transferFrom( address from, address to, uint value) returns (bool ok)
     {
+        if (!_rules.canTransfer(msg.sender, from, to, value)) throw;
         super.transferFrom(from, to, value);
     }
-    function approve(address spender, uint value)
-        freezable returns (bool ok)
+    function approve(address spender, uint value) returns (bool ok)
     {
+        if (!_rules.canApprove(msg.sender, spender, value)) throw;
         super.approve(spender, value);
     }
 
