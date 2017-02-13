@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-pragma solidity ^0.4.9;
+pragma solidity ^0.4.8;
 
 contract DSTokenRules {
     function canTransfer(address caller, address from, address to, uint amount)

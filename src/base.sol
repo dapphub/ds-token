@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-pragma solidity ^0.4.9;
+pragma solidity ^0.4.8;
 
 // Good old ERC20 implementation
 // You probably want `DSToken` which has some `auth`ed backdoors for giving it extra functionality
