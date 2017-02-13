@@ -27,7 +27,7 @@ contract DSTokenBase is ERC20
     mapping( address => uint ) _balances;
     mapping( address => mapping( address => uint ) ) _approvals;
     uint _supply;
-    function ERC20Base( uint initial_balance ) {
+    function DSTokenBase( uint initial_balance ) {
         _balances[msg.sender] = initial_balance;
         _supply = initial_balance;
     }
