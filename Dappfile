@@ -1,25 +1,6 @@
-name: ds-token
-version: 0
-layout:
-  build_dir: ./build
-  packages_directory: ./lib
-  sol_sources: ./src
-environments:
-  develop:
-    objects: {}
-    type: internal
-    chain: ''
-  morden:
-    objects:
-      factory:
-        value: '0x54ee5e1c18297b1eab8c63d52de3721dedfa5698'
-        type: >-
-          DSTokenFactory[07dbb81c6577593a74e7b1c7a419edad31c2977ace714935d11b6c8fe04c1775]
-    type: UNKNOWN
-    chain: ''
-description: ''
-authors: []
-license: Apache-2.0
-keywords:
-  - dapple
-dapple_version: 0.8.41
+name            ds-token
+description
+version         0.0.1
+
+author          nikolai
+license         Apache-2.0
