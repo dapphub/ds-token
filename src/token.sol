@@ -39,20 +39,20 @@ contract DSToken is DSTokenBase, DSAuth {
         super.approve(spender, value);
     }
 
-    function burn(address who, uint amount)
+    function burn(uint amount)
         auth
     {
-        if( _balances[who] - amount > _balances[who] ) {
+        if( _balances[msg.sender] - amount > _balances[msg.sender] ) {
             throw;
         }
-        _balances[who] -= amount;
+        _balances[msg.sender] -= amount;
     }
-    function mint(address who, uint amount)
+    function mint(uint amount)
         auth
     {
-        if( _balances[who] + amount < _balances[who] ) {
+        if( _balances[msg.sender] + amount < _balances[msg.sender] ) {
             throw;
         }
-        _balances[who] += amount;
+        _balances[msg.sender] += amount;
     }
 }

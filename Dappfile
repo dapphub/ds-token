@@ -1,6 +1,6 @@
 name            ds-token
 description
-kelvin          500
+kelvin          499
 
 author          dapphub
 license         Apache-2.0
