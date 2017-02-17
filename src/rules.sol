@@ -20,5 +20,5 @@ contract DSTokenRules {
     function canTransfer(address caller, address from, address to, uint amount)
         constant returns (bool);
     function canApprove(address caller, address spender, uint amount)
-        constant return (bool);
+        constant returns (bool);
 }

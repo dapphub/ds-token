@@ -16,14 +16,16 @@
 
 pragma solidity ^0.4.8;
 
-import 'base.sol';
-import 'rules.sol';
+import "ds-auth/auth.sol";
 
-contract DSToken is DSTokenBase {
+import "./base.sol";
+import "./rules.sol";
+
+contract DSToken is DSTokenBase, DSAuth {
     DSTokenRules _rules;
     function transfer( address to, uint value) returns (bool ok)
     {
-        if (!_rules.canTransfer(msg.sender, msg,sender, to, value)) throw;
+        if (!_rules.canTransfer(msg.sender, msg.sender, to, value)) throw;
         super.transfer(to, value);
     }
     function transferFrom( address from, address to, uint value) returns (bool ok)
