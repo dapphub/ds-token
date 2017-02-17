@@ -20,10 +20,10 @@ import "ds-test/test.sol";
 
 import "./base.sol";
 
-contract Person {
+contract TokenUser {
     ERC20  token;
 
-    function Person(ERC20 token_) {
+    function TokenUser(ERC20 token_) {
         token = token_;
     }
 
@@ -60,13 +60,13 @@ contract DSTokenTest is DSTest {
     uint constant initialBalance = 1000;
 
     ERC20 token;
-    Person user1;
-    Person user2;
+    TokenUser user1;
+    TokenUser user2;
 
     function DSTokenTest() {
         token = createToken();
-        user1 = new Person(token);
-        user2 = new Person(token);
+        user1 = new TokenUser(token);
+        user2 = new TokenUser(token);
     }
 
     function createToken() internal returns (ERC20) {
