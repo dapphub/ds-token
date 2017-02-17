@@ -16,60 +16,61 @@
 
 pragma solidity ^0.4.8;
 
-import 'dapple/test.sol';
-import 'dapple/debug.sol';
-import 'base.sol';
+import "ds-test/test.sol";
 
-// Supporting classes
+import "./base.sol";
 
-contract ERC20Tester is Tester, Debug {
+contract Person {
+    ERC20  token;
+
+    function Person(ERC20 token_) {
+        token = token_;
+    }
+
     function doTransferFrom(address from, address to, uint amount)
         returns (bool)
     {
-        return ERC20(_t).transferFrom(from, to, amount);
+        return token.transferFrom(from, to, amount);
     }
 
     function doTransfer(address to, uint amount)
         returns (bool)
     {
-        return ERC20(_t).transfer(to, amount);
+        return token.transfer(to, amount);
     }
 
     function doApprove(address recipient, uint amount)
         returns (bool)
     {
-        return ERC20(_t).approve(recipient, amount);
+        return token.approve(recipient, amount);
     }
 
     function doAllowance(address owner, address spender)
         constant returns (uint)
     {
-        return ERC20(_t).allowance(owner, spender);
+        return token.allowance(owner, spender);
     }
 
     function doBalanceOf(address who) constant returns (uint) {
-        return ERC20(_t).balanceOf(who);
+        return token.balanceOf(who);
     }
 }
 
-// Tests that should work for all Tokens
-contract ERC20Test is Test {
+contract DSTokenTest is DSTest {
     uint constant initialBalance = 1000;
 
     ERC20 token;
-    ERC20Tester user1;
-    ERC20Tester user2;
+    Person user1;
+    Person user2;
 
-    function ERC20Test() {
+    function DSTokenTest() {
         token = createToken();
-        user1 = new ERC20Tester();
-        user2 = new ERC20Tester();
-        user1._target(address(token));
-        user2._target(address(token));
+        user1 = new Person(token);
+        user2 = new Person(token);
     }
 
     function createToken() internal returns (ERC20) {
-        return new ERC20Base(initialBalance);
+        return new DSTokenBase(initialBalance);
     }
 
     function testSetupPrecondition() {
@@ -89,12 +90,12 @@ contract ERC20Test is Test {
         log_named_address("token11111", token);
         token.transfer(user2, sentAmount);
         assertEq(token.balanceOf(user2), sentAmount);
-        assertEq(token.balanceOf(me), initialBalance - sentAmount);
+        assertEq(token.balanceOf(this), initialBalance - sentAmount);
     }
 
     function testFailWrongAccountTransfers() logs_gas {
         uint sentAmount = 250;
-        token.transferFrom(user2, me, sentAmount);
+        token.transferFrom(user2, this, sentAmount);
     }
 
     function testFailInsufficientFundsTransfers() logs_gas {
@@ -107,21 +108,17 @@ contract ERC20Test is Test {
     function testApproveSetsAllowance() logs_gas {
         log_named_address("Test", this);
         log_named_address("Token", token);
-        log_named_address("Me", me);
+        log_named_address("Me", this);
         log_named_address("User 2", user2);
         token.approve(user2, 25);
-        assertEq(token.allowance(me, user2), 25,
-                 "wrong allowance");
+        assertEq(token.allowance(this, user2), 25);
     }
 
     function testChargesAmountApproved() logs_gas {
         uint amountApproved = 20;
         token.approve(user2, amountApproved);
-        assertTrue(user2.doTransferFrom(
-            me, user2, amountApproved),
-            "couldn't transferFrom");
-        assertEq(token.balanceOf(me), initialBalance - amountApproved,
-                 "wrong balance after transferFrom");
+        assert(user2.doTransferFrom(this, user2, amountApproved));
+        assertEq(token.balanceOf(this), initialBalance - amountApproved);
     }
 
     function testFailTransferWithoutApproval() logs_gas {
