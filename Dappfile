@@ -1,6 +1,6 @@
 name            ds-token
 description
-version         0.0.1
+kelvin          500
 
-author          nikolai
+author          dapphub
 license         Apache-2.0
