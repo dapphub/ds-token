@@ -23,36 +23,33 @@ import "./rules.sol";
 
 contract DSToken is DSTokenBase, DSAuth {
     DSTokenRules _rules;
-    function transfer( address to, uint value) returns (bool ok)
-    {
-        if (!_rules.canTransfer(msg.sender, msg.sender, to, value)) throw;
+
+    function assert(bool x) {
+        if (!x) throw;
+    }
+
+    function transfer( address to, uint value) returns (bool) {
+        assert(_rules.canTransfer(msg.sender, msg.sender, to, value));
         super.transfer(to, value);
     }
-    function transferFrom( address from, address to, uint value) returns (bool ok)
-    {
-        if (!_rules.canTransfer(msg.sender, from, to, value)) throw;
+
+    function transferFrom(address from, address to, uint x) returns (bool) {
+        assert(_rules.canTransfer(msg.sender, from, to, value));
         super.transferFrom(from, to, value);
     }
-    function approve(address spender, uint value) returns (bool ok)
-    {
-        if (!_rules.canApprove(msg.sender, spender, value)) throw;
+
+    function approve(address spender, uint value) returns (bool) {
+        assert(_rules.canApprove(msg.sender, spender, value));
         super.approve(spender, value);
     }
 
-    function burn(uint amount)
-        auth
-    {
-        if( _balances[msg.sender] - amount > _balances[msg.sender] ) {
-            throw;
-        }
+    function burn(uint amount) auth {
+        assert(_balances[msg.sender] - amount <= _balances[msg.sender])
         _balances[msg.sender] -= amount;
     }
-    function mint(uint amount)
-        auth
-    {
-        if( _balances[msg.sender] + amount < _balances[msg.sender] ) {
-            throw;
-        }
+
+    function mint(uint amount) auth {
+        assert(_balances[msg.sender] + amount >= _balances[msg.sender]);
         _balances[msg.sender] += amount;
     }
 }
