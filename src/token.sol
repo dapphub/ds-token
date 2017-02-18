@@ -21,10 +21,10 @@ import "ds-auth/auth.sol";
 import "./base.sol";
 import "./rules.sol";
 
-contract DSToken is DSTokenBase, DSAuth {
+contract DSToken is DSTokenBase(0), DSAuth {
     DSTokenRules _rules;
 
-    function assert(bool x) {
+    function assert(bool x) internal {
         if (!x) throw;
     }
 
@@ -32,12 +32,10 @@ contract DSToken is DSTokenBase, DSAuth {
         assert(_rules.canTransfer(msg.sender, msg.sender, dst, x));
         super.transfer(dst, x);
     }
-
     function transferFrom(address src, address dst, uint x) returns (bool) {
         assert(_rules.canTransfer(msg.sender, src, dst, x));
         super.transferFrom(src, dst, x);
     }
-
     function approve(address spender, uint x) returns (bool) {
         assert(_rules.canApprove(msg.sender, spender, x));
         super.approve(spender, x);
@@ -47,7 +45,6 @@ contract DSToken is DSTokenBase, DSAuth {
         assert(_balances[msg.sender] - x <= _balances[msg.sender]);
         _balances[msg.sender] -= x;
     }
-
     function mint(uint x) auth {
         assert(_balances[msg.sender] + x >= _balances[msg.sender]);
         _balances[msg.sender] += x;
