@@ -44,7 +44,7 @@ contract DSToken is DSTokenBase, DSAuth {
     }
 
     function burn(uint amount) auth {
-        assert(_balances[msg.sender] - amount <= _balances[msg.sender])
+        assert(_balances[msg.sender] - amount <= _balances[msg.sender]);
         _balances[msg.sender] -= amount;
     }
 
