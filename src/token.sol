@@ -21,8 +21,6 @@ import "ds-auth/auth.sol";
 import "./base.sol";
 
 contract DSToken is DSTokenBase(0), DSAuth {
-    DSTokenRules _rules;
-
     function assert(bool x) internal {
         if (!x) throw;
     }
