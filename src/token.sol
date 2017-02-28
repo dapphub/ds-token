@@ -21,15 +21,30 @@ import "ds-auth/auth.sol";
 import "./base.sol";
 
 contract DSToken is DSTokenBase(0), DSAuth {
+    bool public _stopped;
+
     function assert(bool x) internal {
         if (!x) throw;
     }
 
-    function burn(uint x) auth {
+    modifier stop {
+        if (_stopped) throw;
+        _;
+    }
+
+    function stop() auth {
+        _stopped = true;
+    }
+
+    function start() auth {
+        _stopped = false;
+    }
+
+    function burn(uint x) auth stop {
         assert(_balances[msg.sender] - x <= _balances[msg.sender]);
         _balances[msg.sender] -= x;
     }
-    function mint(uint x) auth {
+    function mint(uint x) auth stop {
         assert(_balances[msg.sender] + x >= _balances[msg.sender]);
         _balances[msg.sender] += x;
     }
