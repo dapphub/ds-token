@@ -27,7 +27,7 @@ contract DSToken is DSTokenBase(0), DSAuth {
         if (!x) throw;
     }
 
-    modifier stop {
+    modifier stoppable {
         if (_stopped) throw;
         _;
     }
@@ -40,11 +40,22 @@ contract DSToken is DSTokenBase(0), DSAuth {
         _stopped = false;
     }
 
-    function burn(uint x) auth stop {
+    function transfer( address to, uint value) stoppable returns (bool ok) {
+        super.transfer(to, value);
+    }
+
+    function transferFrom( address from, address to, uint value) stoppable returns (bool ok) {
+        super.transferFrom(from, to, value);
+    }
+    function approve( address spender, uint value ) stoppable returns (bool ok) {
+        super.approve(spender, value);
+    }
+
+    function burn(uint x) auth stoppable {
         assert(_balances[msg.sender] - x <= _balances[msg.sender]);
         _balances[msg.sender] -= x;
     }
-    function mint(uint x) auth stop {
+    function mint(uint x) auth stoppable {
         assert(_balances[msg.sender] + x >= _balances[msg.sender]);
         _balances[msg.sender] += x;
     }

@@ -37,7 +37,7 @@ contract DSTokenBase is ERC20
     function balanceOf( address who ) constant returns (uint value) {
         return _balances[who];
     }
-    function transfer( address to, uint value) returns (bool ok) stop {
+    function transfer( address to, uint value) returns (bool ok) {
         if( _balances[msg.sender] < value ) {
             throw;
         }
@@ -49,7 +49,7 @@ contract DSTokenBase is ERC20
         Transfer( msg.sender, to, value );
         return true;
     }
-    function transferFrom( address from, address to, uint value) returns (bool ok) stop {
+    function transferFrom( address from, address to, uint value) returns (bool ok) {
         // if you don't have enough balance, throw
         if( _balances[from] < value ) {
             throw;
@@ -68,7 +68,7 @@ contract DSTokenBase is ERC20
         Transfer( from, to, value );
         return true;
     }
-    function approve(address spender, uint value) returns (bool ok) stop {
+    function approve(address spender, uint value) returns (bool ok) {
         _approvals[msg.sender][spender] = value;
         Approval( msg.sender, spender, value );
         return true;
