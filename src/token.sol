@@ -54,9 +54,11 @@ contract DSToken is DSTokenBase(0), DSAuth {
     function burn(uint x) auth stoppable {
         assert(_balances[msg.sender] - x <= _balances[msg.sender]);
         _balances[msg.sender] -= x;
+        _supply -= x;
     }
     function mint(uint x) auth stoppable {
         assert(_balances[msg.sender] + x >= _balances[msg.sender]);
         _balances[msg.sender] += x;
+        _supply += x;
     }
 }
