@@ -41,14 +41,15 @@ contract DSToken is DSTokenBase(0), DSAuth {
     }
 
     function transfer( address to, uint value) stoppable returns (bool ok) {
-        super.transfer(to, value);
+        return super.transfer(to, value);
     }
 
     function transferFrom( address from, address to, uint value) stoppable returns (bool ok) {
-        super.transferFrom(from, to, value);
+        return super.transferFrom(from, to, value);
     }
+
     function approve( address spender, uint value ) stoppable returns (bool ok) {
-        super.approve(spender, value);
+        return super.approve(spender, value);
     }
 
     function burn(uint x) auth stoppable {
