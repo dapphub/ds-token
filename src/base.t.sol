@@ -63,7 +63,7 @@ contract DSTokenTest is DSTest {
     TokenUser user1;
     TokenUser user2;
 
-    function DSTokenTest() {
+    function setUp() {
         token = createToken();
         user1 = new TokenUser(token);
         user2 = new TokenUser(token);
