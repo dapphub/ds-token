@@ -21,7 +21,17 @@ import "ds-auth/auth.sol";
 import "./base.sol";
 
 contract DSToken is DSTokenBase(0), DSAuth {
+    string public name;
+    string public symbol;
+    uint public decimals;
+
     bool public _stopped;
+
+    function DSToken(string name_, string symbol_, uint decimals_) {
+        name = name_;
+        symbol = symbol_;
+        decimals = decimals_;
+    }
 
     function assert(bool x) internal {
         if (!x) throw;

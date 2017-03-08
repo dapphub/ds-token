@@ -71,7 +71,7 @@ contract DSTokenTest is DSTest {
     }
 
     function createToken() internal returns (DSToken) {
-        return new DSToken();
+        return new DSToken("Test Token", "TST", 18);
     }
 
     function testSetupPrecondition() {
