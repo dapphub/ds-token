@@ -18,12 +18,12 @@ pragma solidity ^0.4.8;
 
 import "ds-test/test.sol";
 
-import "./base.sol";
+import "./token.sol";
 
 contract TokenUser {
-    ERC20  token;
+    DSToken  token;
 
-    function TokenUser(ERC20 token_) {
+    function TokenUser(DSToken token_) {
         token = token_;
     }
 
@@ -56,28 +56,29 @@ contract TokenUser {
     }
 }
 
-contract DSTokenBaseTest is DSTest {
+contract DSTokenTest is DSTest {
     uint constant initialBalance = 1000;
 
-    ERC20 token;
+    DSToken token;
     TokenUser user1;
     TokenUser user2;
 
     function setUp() {
         token = createToken();
+        token.mint(initialBalance);
         user1 = new TokenUser(token);
         user2 = new TokenUser(token);
     }
 
-    function createToken() internal returns (ERC20) {
-        return new DSTokenBase(initialBalance);
+    function createToken() internal returns (DSToken) {
+        return new DSToken("Test Token", "TST", 18);
     }
 
     function testSetupPrecondition() {
         assertEq(token.balanceOf(this), initialBalance);
     }
 
-    function testTransferCost() logs_gas() {
+    function testTransferCost() logs_gas {
         token.transfer(address(0), 10);
     }
 
@@ -101,9 +102,8 @@ contract DSTokenBaseTest is DSTest {
     function testFailInsufficientFundsTransfers() logs_gas {
         uint sentAmount = 250;
         token.transfer(user1, initialBalance - sentAmount);
-        token.transfer(user2, sentAmount+1);
+        token.transfer(user2, sentAmount + 1);
     }
-
 
     function testApproveSetsAllowance() logs_gas {
         log_named_address("Test", this);
@@ -132,6 +132,23 @@ contract DSTokenBaseTest is DSTest {
         token.transfer(user1, 50);
         user1.doApprove(self, 20);
         token.transferFrom(user1, self, 21);
+    }
+
+    function testMint() logs_gas {
+        uint mintAmount = 10;
+        token.mint(mintAmount);
+        assertEq(token.totalSupply(), initialBalance + mintAmount);
+    }
+
+    function testBurn() logs_gas {
+        uint burnAmount = 10;
+        token.burn(burnAmount);
+        assertEq(token.totalSupply(), initialBalance - burnAmount);
+    }
+
+    function testFailTransferWhenStopped() logs_gas {
+        token.stop();
+        token.transfer(user1, 10);
     }
 }
 

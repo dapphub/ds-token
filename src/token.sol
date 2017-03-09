@@ -21,16 +21,56 @@ import "ds-auth/auth.sol";
 import "./base.sol";
 
 contract DSToken is DSTokenBase(0), DSAuth {
+    string public name;
+    string public symbol;
+    uint public decimals;
+
+    bool public _stopped;
+
+    function DSToken(string name_, string symbol_, uint decimals_) {
+        name = name_;
+        symbol = symbol_;
+        decimals = decimals_;
+    }
+
     function assert(bool x) internal {
         if (!x) throw;
     }
 
-    function burn(uint x) auth {
+    modifier stoppable {
+        if (_stopped) throw;
+        _;
+    }
+
+    function stop() auth {
+        _stopped = true;
+    }
+
+    function start() auth {
+        _stopped = false;
+    }
+
+    function transfer( address to, uint value) stoppable returns (bool ok) {
+        return super.transfer(to, value);
+    }
+
+    function transferFrom( address from, address to, uint value) stoppable returns (bool ok) {
+        return super.transferFrom(from, to, value);
+    }
+
+    function approve( address spender, uint value ) stoppable returns (bool ok) {
+        return super.approve(spender, value);
+    }
+
+    function burn(uint x) auth stoppable {
         assert(_balances[msg.sender] - x <= _balances[msg.sender]);
         _balances[msg.sender] -= x;
+        _supply -= x;
     }
-    function mint(uint x) auth {
+    
+    function mint(uint x) auth stoppable {
         assert(_balances[msg.sender] + x >= _balances[msg.sender]);
         _balances[msg.sender] += x;
+        _supply += x;
     }
 }
