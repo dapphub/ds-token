@@ -57,7 +57,7 @@ contract TokenUser {
 }
 
 contract DSTokenTest is DSTest {
-    uint constant initialBalance = 1000;
+    uint128 constant initialBalance = 1000;
 
     DSToken token;
     TokenUser user1;
@@ -135,13 +135,13 @@ contract DSTokenTest is DSTest {
     }
 
     function testMint() logs_gas {
-        uint mintAmount = 10;
+        uint128 mintAmount = 10;
         token.mint(mintAmount);
         assertEq(token.totalSupply(), initialBalance + mintAmount);
     }
 
     function testBurn() logs_gas {
-        uint burnAmount = 10;
+        uint128 burnAmount = 10;
         token.burn(burnAmount);
         assertEq(token.totalSupply(), initialBalance - burnAmount);
     }

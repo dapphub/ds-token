@@ -62,13 +62,13 @@ contract DSToken is DSTokenBase(0), DSAuth {
         return super.approve(spender, value);
     }
 
-    function burn(uint x) auth stoppable {
+    function burn(uint128 x) auth stoppable {
         assert(_balances[msg.sender] - x <= _balances[msg.sender]);
         _balances[msg.sender] -= x;
         _supply -= x;
     }
     
-    function mint(uint x) auth stoppable {
+    function mint(uint128 x) auth stoppable {
         assert(_balances[msg.sender] + x >= _balances[msg.sender]);
         _balances[msg.sender] += x;
         _supply += x;
