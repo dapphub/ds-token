@@ -1,18 +1,13 @@
-/*
-   Copyright 2017 Nexus Development, LLC
+/// token.sol -- ERC20 implementation with minting and burning
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+// Copyright (C) 2015, 2016, 2017  Nexus Development, LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
+// Licensed under the Apache License, Version 2.0 (the "License").
+// You may not use this file except in compliance with the License.
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
 pragma solidity ^0.4.8;
 
@@ -21,11 +16,10 @@ import "ds-auth/auth.sol";
 import "./base.sol";
 
 contract DSToken is DSTokenBase(0), DSAuth {
-    string public name;
-    string public symbol;
-    uint public decimals;
-
-    bool public _stopped;
+    string   public  name;
+    string   public  symbol;
+    uint256  public  decimals;
+    bool     public  stopped;
 
     function DSToken(string name_, string symbol_, uint decimals_) {
         name = name_;
@@ -33,44 +27,44 @@ contract DSToken is DSTokenBase(0), DSAuth {
         decimals = decimals_;
     }
 
-    function assert(bool x) internal {
-        if (!x) throw;
-    }
-
     modifier stoppable {
-        if (_stopped) throw;
+        assert (!stopped);
         _;
     }
-
     function stop() auth {
-        _stopped = true;
+        stopped = true;
     }
-
     function start() auth {
-        _stopped = false;
+        stopped = false;
     }
 
-    function transfer( address to, uint value) stoppable returns (bool ok) {
-        return super.transfer(to, value);
+    function transfer(address dst, uint wad) stoppable returns (bool) {
+        return super.transfer(dst, wad);
+    }
+    function transferFrom(
+        address src, address dst, uint wad
+    ) stoppable returns (bool) {
+        return super.transferFrom(src, dst, wad);
+    }
+    function approve(address guy, uint wad) stoppable returns (bool) {
+        return super.approve(guy, wad);
     }
 
-    function transferFrom( address from, address to, uint value) stoppable returns (bool ok) {
-        return super.transferFrom(from, to, value);
+    function push(address dst, uint128 wad) {
+        transfer(dst, wad);
+    }
+    function pull(address src, uint128 wad) {
+        transferFrom(src, msg.sender, wad);
     }
 
-    function approve( address spender, uint value ) stoppable returns (bool ok) {
-        return super.approve(spender, value);
+    function mint(uint128 wad) auth stoppable {
+        assert(_balances[msg.sender] + wad >= _balances[msg.sender]);
+        _balances[msg.sender] += wad;
+        _supply += wad;
     }
-
-    function burn(uint128 x) auth stoppable {
-        assert(_balances[msg.sender] - x <= _balances[msg.sender]);
-        _balances[msg.sender] -= x;
-        _supply -= x;
-    }
-    
-    function mint(uint128 x) auth stoppable {
-        assert(_balances[msg.sender] + x >= _balances[msg.sender]);
-        _balances[msg.sender] += x;
-        _supply += x;
-    }
+    function burn(uint128 wad) auth stoppable {
+        assert(_balances[msg.sender] - wad <= _balances[msg.sender]);
+        _balances[msg.sender] -= wad;
+        _supply -= wad;
+    }    
 }

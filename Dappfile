@@ -1,6 +1,7 @@
 name            ds-token
-description
-kelvin          499
+description     ERC20 implementation with minting and burning
+kelvin          99
 
-author          dapphub
+author          Nikolai Mushegian <nikolai@nexusdev.us>
+author          Daniel Brockman <daniel@brockman.se>
 license         Apache-2.0

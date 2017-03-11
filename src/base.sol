@@ -1,82 +1,77 @@
-/*
-   Copyright 2016 Nexus Development, LLC
+/// base.sol -- basic ERC20 implementation
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+// Copyright (C) 2015, 2016, 2017  Nexus Development, LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
+// Licensed under the Apache License, Version 2.0 (the "License").
+// You may not use this file except in compliance with the License.
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
 pragma solidity ^0.4.8;
 
-// Good old ERC20 implementation
-// You probably want `DSToken` which has some `auth`ed backdoors for giving it extra functionality
-// Everything throws instead of returning false on failure.
+import "erc20/erc20.sol";
 
-import 'erc20/erc20.sol';
-
-contract DSTokenBase is ERC20
-{
-    mapping( address => uint ) _balances;
-    mapping( address => mapping( address => uint ) ) _approvals;
-    uint _supply;
-    function DSTokenBase( uint initial_balance ) {
-        _balances[msg.sender] = initial_balance;
-        _supply = initial_balance;
+contract DSTokenBase is ERC20 {
+    uint256                                            _supply;
+    mapping (address => uint256)                       _balances;
+    mapping (address => mapping (address => uint256))  _approvals;
+    
+    function DSTokenBase(uint256 supply) {
+        _balances[msg.sender] = supply;
+        _supply = supply;
     }
-    function totalSupply() constant returns (uint supply) {
+    
+    function totalSupply() constant returns (uint256) {
         return _supply;
     }
-    function balanceOf( address who ) constant returns (uint value) {
-        return _balances[who];
+    function balanceOf(address src) constant returns (uint256) {
+        return _balances[src];
     }
-    function transfer( address to, uint value) returns (bool ok) {
-        if( _balances[msg.sender] < value ) {
-            throw;
-        }
-        if( !safeToAdd(_balances[to], value) ) {
-            throw;
-        }
-        _balances[msg.sender] -= value;
-        _balances[to] += value;
-        Transfer( msg.sender, to, value );
+    function allowance(address src, address guy) constant returns (uint256) {
+        return _approvals[src][guy];
+    }
+    
+    function transfer(address dst, uint wad) returns (bool) {
+        assert(_balances[msg.sender] >= wad);
+        assert(safeToAdd(_balances[dst], wad));
+        
+        _balances[msg.sender] -= wad;
+        _balances[dst] += wad;
+        
+        Transfer(msg.sender, dst, wad);
+        
         return true;
     }
-    function transferFrom( address from, address to, uint value) returns (bool ok) {
-        // if you don't have enough balance, throw
-        if( _balances[from] < value ) {
-            throw;
-        }
-        // if you don't have approval, throw
-        if( _approvals[from][msg.sender] < value ) {
-            throw;
-        }
-        if( !safeToAdd(_balances[to], value) ) {
-            throw;
-        }
-        // transfer and return true
-        _approvals[from][msg.sender] -= value;
-        _balances[from] -= value;
-        _balances[to] += value;
-        Transfer( from, to, value );
+    
+    function transferFrom(address src, address dst, uint wad) returns (bool) {
+        assert(_balances[src] >= wad);
+        assert(_approvals[src][msg.sender] >= wad);
+        assert(safeToAdd(_balances[dst], wad));
+        
+        _approvals[src][msg.sender] -= wad;
+        _balances[src] -= wad;
+        _balances[dst] += wad;
+        
+        Transfer(src, dst, wad);
+        
         return true;
     }
-    function approve(address spender, uint value) returns (bool ok) {
-        _approvals[msg.sender][spender] = value;
-        Approval( msg.sender, spender, value );
+    
+    function approve(address guy, uint256 wad) returns (bool) {
+        _approvals[msg.sender][guy] = wad;
+        
+        Approval(msg.sender, guy, wad);
+        
         return true;
     }
-    function allowance(address owner, address spender) constant returns (uint _allowance) {
-        return _approvals[owner][spender];
-    }
+    
     function safeToAdd(uint a, uint b) internal returns (bool) {
         return (a + b >= a);
+    }
+
+    function assert(bool x) internal {
+        if (!x) throw;
     }
 }
