@@ -1,6 +1,6 @@
 name            ds-token
 description     ERC20 implementation with minting and burning
-kelvin          99
+version         K99
 
 author          Nikolai Mushegian <nikolai@nexusdev.us>
 author          Daniel Brockman <daniel@brockman.se>
