@@ -50,11 +50,11 @@ contract DSToken is DSTokenBase(0), DSAuth {
         return super.approve(guy, wad);
     }
 
-    function push(address dst, uint128 wad) {
-        transfer(dst, wad);
+    function push(address dst, uint128 wad) returns (bool) {
+        return transfer(dst, wad);
     }
-    function pull(address src, uint128 wad) {
-        transferFrom(src, msg.sender, wad);
+    function pull(address src, uint128 wad) returns (bool) {
+        return transferFrom(src, msg.sender, wad);
     }
 
     function mint(uint128 wad) auth stoppable {
