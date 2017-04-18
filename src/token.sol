@@ -51,10 +51,10 @@ contract DSToken is DSTokenBase(0), DSAuth, DSNote {
         return super.approve(guy, wad);
     }
 
-    function push(address dst, uint128 wad) note returns (bool) {
+    function push(address dst, uint128 wad) returns (bool) {
         return transfer(dst, wad);
     }
-    function pull(address src, uint128 wad) note returns (bool) {
+    function pull(address src, uint128 wad) returns (bool) {
         return transferFrom(src, msg.sender, wad);
     }
 
