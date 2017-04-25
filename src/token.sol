@@ -12,10 +12,11 @@
 pragma solidity ^0.4.8;
 
 import "ds-auth/auth.sol";
+import "ds-note/note.sol";
 
 import "./base.sol";
 
-contract DSToken is DSTokenBase(0), DSAuth {
+contract DSToken is DSTokenBase(0), DSAuth, DSNote {
     string   public  name;
     string   public  symbol;
     uint256  public  decimals;
@@ -31,22 +32,22 @@ contract DSToken is DSTokenBase(0), DSAuth {
         assert (!stopped);
         _;
     }
-    function stop() auth {
+    function stop() auth note {
         stopped = true;
     }
-    function start() auth {
+    function start() auth note {
         stopped = false;
     }
 
-    function transfer(address dst, uint wad) stoppable returns (bool) {
+    function transfer(address dst, uint wad) stoppable note returns (bool) {
         return super.transfer(dst, wad);
     }
     function transferFrom(
         address src, address dst, uint wad
-    ) stoppable returns (bool) {
+    ) stoppable note returns (bool) {
         return super.transferFrom(src, dst, wad);
     }
-    function approve(address guy, uint wad) stoppable returns (bool) {
+    function approve(address guy, uint wad) stoppable note returns (bool) {
         return super.approve(guy, wad);
     }
 
@@ -57,12 +58,12 @@ contract DSToken is DSTokenBase(0), DSAuth {
         return transferFrom(src, msg.sender, wad);
     }
 
-    function mint(uint128 wad) auth stoppable {
+    function mint(uint128 wad) auth stoppable note {
         assert(_balances[msg.sender] + wad >= _balances[msg.sender]);
         _balances[msg.sender] += wad;
         _supply += wad;
     }
-    function burn(uint128 wad) auth stoppable {
+    function burn(uint128 wad) auth stoppable note {
         assert(_balances[msg.sender] - wad <= _balances[msg.sender]);
         _balances[msg.sender] -= wad;
         _supply -= wad;
