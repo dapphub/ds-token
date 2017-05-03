@@ -65,7 +65,7 @@ contract DSToken is DSTokenBase(0), DSAuth, DSNote {
         _supply = sub(_supply, wad);
     }
 
-    // Optional token name and custom precision
+    // Optional token name
 
     bytes32   public  name = "";
     
