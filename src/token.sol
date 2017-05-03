@@ -9,7 +9,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.10;
 
 import "ds-auth/auth.sol";
 import "ds-note/note.sol";
@@ -17,15 +17,13 @@ import "ds-note/note.sol";
 import "./base.sol";
 
 contract DSToken is DSTokenBase(0), DSAuth, DSNote {
-    string   public  name;
-    string   public  symbol;
-    uint256  public  decimals;
+
+    bytes32  public  symbol;
+    uint256  public  decimals = 18;
     bool     public  stopped;
 
-    function DSToken(string name_, string symbol_, uint decimals_) {
-        name = name_;
+    function DSToken(bytes32 symbol_) {
         symbol = symbol_;
-        decimals = decimals_;
     }
 
     modifier stoppable {
@@ -59,13 +57,23 @@ contract DSToken is DSTokenBase(0), DSAuth, DSNote {
     }
 
     function mint(uint128 wad) auth stoppable note {
-        assert(_balances[msg.sender] + wad >= _balances[msg.sender]);
-        _balances[msg.sender] += wad;
-        _supply += wad;
+        _balances[msg.sender] = add(_balances[msg.sender], wad);
+        _supply = add(_supply, wad);
     }
     function burn(uint128 wad) auth stoppable note {
-        assert(_balances[msg.sender] - wad <= _balances[msg.sender]);
-        _balances[msg.sender] -= wad;
-        _supply -= wad;
+        _balances[msg.sender] = sub(_balances[msg.sender], wad);
+        _supply = sub(_supply, wad);
+    }
+
+    // Optional token name and custom precision
+
+    bytes32   public  name = "";
+    
+    function setName(bytes32 name_) auth {
+        name = name_;
+    }
+
+    function setDecimals(uint256 decimals_) auth {
+        decimals = decimals_;
     }    
 }

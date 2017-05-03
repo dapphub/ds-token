@@ -49,6 +49,14 @@ contract TokenUser {
     function doBalanceOf(address who) constant returns (uint) {
         return token.balanceOf(who);
     }
+
+    function doSetName(bytes32 name) constant {
+        token.setName(name);
+    }
+
+    function doSetDecimals(uint256 decimals) constant {
+        token.setDecimals(decimals);
+    }
 }
 
 contract DSTokenTest is DSTest {
@@ -66,7 +74,7 @@ contract DSTokenTest is DSTest {
     }
 
     function createToken() internal returns (DSToken) {
-        return new DSToken("Test Token", "TST", 18);
+        return new DSToken("TST");
     }
 
     function testSetupPrecondition() {
@@ -144,6 +152,26 @@ contract DSTokenTest is DSTest {
     function testFailTransferWhenStopped() logs_gas {
         token.stop();
         token.transfer(user1, 10);
+    }
+
+    function testSetName() logs_gas {
+        assertEq(token.name(), "");
+        token.setName("Test");
+        assertEq(token.name(), "Test");
+    }
+
+    function testSetDecimals() logs_gas {
+        assertEq(token.decimals(), 18);
+        token.setDecimals(1);
+        assertEq(token.decimals(), 1);
+    }
+
+    function testFailSetName() logs_gas {
+        user1.doSetName("Test");
+    }
+
+    function testFailSetDecimals() logs_gas {
+        user1.doSetDecimals(1);
     }
 }
 
