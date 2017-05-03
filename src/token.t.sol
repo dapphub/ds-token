@@ -54,9 +54,6 @@ contract TokenUser {
         token.setName(name);
     }
 
-    function doSetDecimals(uint256 decimals) constant {
-        token.setDecimals(decimals);
-    }
 }
 
 contract DSTokenTest is DSTest {
@@ -160,18 +157,9 @@ contract DSTokenTest is DSTest {
         assertEq(token.name(), "Test");
     }
 
-    function testSetDecimals() logs_gas {
-        assertEq(token.decimals(), 18);
-        token.setDecimals(1);
-        assertEq(token.decimals(), 1);
-    }
-
     function testFailSetName() logs_gas {
         user1.doSetName("Test");
     }
 
-    function testFailSetDecimals() logs_gas {
-        user1.doSetDecimals(1);
-    }
 }
 

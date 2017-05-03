@@ -19,7 +19,7 @@ import "./base.sol";
 contract DSToken is DSTokenBase(0), DSAuth, DSNote {
 
     bytes32  public  symbol;
-    uint256  public  decimals = 18;
+    uint256  public  decimals = 18; // standard token precision. override to customize
     bool     public  stopped;
 
     function DSToken(bytes32 symbol_) {
@@ -73,7 +73,4 @@ contract DSToken is DSTokenBase(0), DSAuth, DSNote {
         name = name_;
     }
 
-    function setDecimals(uint256 decimals_) auth {
-        decimals = decimals_;
-    }    
 }
