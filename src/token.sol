@@ -11,30 +11,17 @@
 
 pragma solidity ^0.4.10;
 
-import "ds-auth/auth.sol";
-import "ds-note/note.sol";
+import "ds-stop/stop.sol";
 
 import "./base.sol";
 
-contract DSToken is DSTokenBase(0), DSAuth, DSNote {
+contract DSToken is DSTokenBase(0), DSStop {
 
     bytes32  public  symbol;
     uint256  public  decimals = 18; // standard token precision. override to customize
-    bool     public  stopped;
 
     function DSToken(bytes32 symbol_) {
         symbol = symbol_;
-    }
-
-    modifier stoppable {
-        assert (!stopped);
-        _;
-    }
-    function stop() auth note {
-        stopped = true;
-    }
-    function start() auth note {
-        stopped = false;
     }
 
     function transfer(address dst, uint wad) stoppable note returns (bool) {
