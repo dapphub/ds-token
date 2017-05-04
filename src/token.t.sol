@@ -9,7 +9,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.10;
 
 import "ds-test/test.sol";
 
@@ -49,6 +49,11 @@ contract TokenUser {
     function doBalanceOf(address who) constant returns (uint) {
         return token.balanceOf(who);
     }
+
+    function doSetName(bytes32 name) constant {
+        token.setName(name);
+    }
+
 }
 
 contract DSTokenTest is DSTest {
@@ -66,7 +71,7 @@ contract DSTokenTest is DSTest {
     }
 
     function createToken() internal returns (DSToken) {
-        return new DSToken("Test Token", "TST", 18);
+        return new DSToken("TST");
     }
 
     function testSetupPrecondition() {
@@ -145,5 +150,16 @@ contract DSTokenTest is DSTest {
         token.stop();
         token.transfer(user1, 10);
     }
+
+    function testSetName() logs_gas {
+        assertEq(token.name(), "");
+        token.setName("Test");
+        assertEq(token.name(), "Test");
+    }
+
+    function testFailSetName() logs_gas {
+        user1.doSetName("Test");
+    }
+
 }
 

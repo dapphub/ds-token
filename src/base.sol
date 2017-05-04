@@ -9,11 +9,12 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.10;
 
 import "erc20/erc20.sol";
+import "ds-math/math.sol";
 
-contract DSTokenBase is ERC20 {
+contract DSTokenBase is ERC20, DSMath {
     uint256                                            _supply;
     mapping (address => uint256)                       _balances;
     mapping (address => mapping (address => uint256))  _approvals;
@@ -35,10 +36,9 @@ contract DSTokenBase is ERC20 {
     
     function transfer(address dst, uint wad) returns (bool) {
         assert(_balances[msg.sender] >= wad);
-        assert(safeToAdd(_balances[dst], wad));
         
-        _balances[msg.sender] -= wad;
-        _balances[dst] += wad;
+        _balances[msg.sender] = sub(_balances[msg.sender], wad);
+        _balances[dst] = add(_balances[dst], wad);
         
         Transfer(msg.sender, dst, wad);
         
@@ -48,11 +48,10 @@ contract DSTokenBase is ERC20 {
     function transferFrom(address src, address dst, uint wad) returns (bool) {
         assert(_balances[src] >= wad);
         assert(_approvals[src][msg.sender] >= wad);
-        assert(safeToAdd(_balances[dst], wad));
         
-        _approvals[src][msg.sender] -= wad;
-        _balances[src] -= wad;
-        _balances[dst] += wad;
+        _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
+        _balances[src] = sub(_balances[src], wad);
+        _balances[dst] = add(_balances[dst], wad);
         
         Transfer(src, dst, wad);
         
@@ -66,12 +65,5 @@ contract DSTokenBase is ERC20 {
         
         return true;
     }
-    
-    function safeToAdd(uint a, uint b) internal returns (bool) {
-        return (a + b >= a);
-    }
 
-    function assert(bool x) internal {
-        if (!x) throw;
-    }
 }
