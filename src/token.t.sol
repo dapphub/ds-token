@@ -163,10 +163,10 @@ contract DSTokenTest is DSTest {
     function testBoolApprove() logs_gas {
         assertEq(token.balanceOf(this), 1000);
         token.rely(user1);
-        assertEq(token.allowance(this, user1), 2**256 - 1);
+        assertEq(token.allowance(this, user1), uint(-1));
         assert(user1.doTransferFrom(this, user1, 10));
         assertEq(token.balanceOf(this), 990);
-        assertEq(token.allowance(this, user1), 2**256 - 1);
+        assertEq(token.allowance(this, user1), uint(-1));
 
         token.deny(user1);
         assertEq(token.allowance(this, user1), 0);

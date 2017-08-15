@@ -17,8 +17,6 @@ import "./base.sol";
 
 contract DSToken is DSTokenBase(0), DSStop {
 
-    uint256 constant MAX_UINT = 2**256 - 1;
-
     bytes32  public  symbol;
     uint256  public  decimals = 18; // standard token precision. override to customize
 
@@ -34,7 +32,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         require(_balances[src] >= wad);
         require(_approvals[src][msg.sender] >= wad);
 
-        if (_approvals[src][msg.sender] < MAX_UINT) {
+        if (_approvals[src][msg.sender] < uint(-1)) {
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
         _balances[src] = sub(_balances[src], wad);
@@ -64,7 +62,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         _supply = sub(_supply, wad);
     }
     function rely(address guy) stoppable note returns (bool) {
-        return super.approve(guy, MAX_UINT);
+        return super.approve(guy, uint(-1));
     }
     function deny(address guy) stoppable note returns (bool) {
         return super.approve(guy, 0);
