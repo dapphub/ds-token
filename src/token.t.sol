@@ -25,7 +25,7 @@ contract TokenUser {
     function doTransferFrom(address from, address to, uint amount)
         returns (bool)
     {
-        return token.move(from, to, cast(amount));
+        return token.move(from, to, amount);
     }
 
     function doTransfer(address to, uint amount)

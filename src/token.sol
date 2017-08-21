@@ -16,14 +16,14 @@ pragma solidity ^0.4.15;
 contract DSToken is DSThing
 {
     uint128                                   public size;
-    mapping(address=>uint256)                 public bals;
+    mapping(address=>uint128)                 public bals;
     mapping(address=>mapping(address=>bool))  public deps;  // hodler->spender->ok
 
     function move(address src, address dst, uint128 wad)
     {
         require(src == msg.sender || deps[src][msg.sender]);
-        bals[src] = wsub(balances[src], wad);
-        bals[dst] = wadd(balances[src], wad);
+        bals[src] = wsub(bals[src], wad);
+        bals[dst] = wadd(bals[src], wad);
     }
 
     function push(address dst, uint128 wad)
