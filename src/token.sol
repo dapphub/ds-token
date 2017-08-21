@@ -13,14 +13,13 @@ import 'ds-thing/thing.sol';
 
 pragma solidity ^0.4.15;
 
-contract DSToken is DSThing, DSStop
+contract DSToken is DSThing
 {
     uint256                                   public size;
     mapping(address=>uint256)                 public bals;
     mapping(address=>mapping(address=>bool))  public deps;  // hodler->spender->ok
 
     function move(address src, address dst, uint128 wad)
-        stoppable
     {
         require(src == msg.sender || deps[src][msg.sender]);
         balances[src] = sub(balances[src], wad);
