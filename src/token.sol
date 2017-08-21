@@ -14,14 +14,10 @@ import 'ds-thing/thing.sol';
 pragma solidity ^0.4.15;
 
 contract DSToken is DSThing {
-    mapping(address=>uint256) bals;
-    mapping(address=>mapping(address=>bool)) deps;  // hodler->spender->ok
+    uint256                                   public size;
+    mapping(address=>uint256)                 public bals;
+    mapping(address=>mapping(address=>bool))  public deps;  // hodler->spender->ok
 
-    // ERC20 compatability because standards
-    uint256                                      public totalSupply;
-    mapping(address=>uint256)                    public balances;
-    mapping(address=>mapping(address=>uint256))  public allowance;
-    
     function move(address src, address dst, uint128 wad) {
         require(src == msg.sender || deps[src][msg.sender]);
         balances[src] = sub(balances[src], wad);
@@ -33,12 +29,12 @@ contract DSToken is DSThing {
     function pull(address src, uint128 wad) {
         move(src, msg.sender, wad);
     }
-    function mint(uint128 wad) auth{
-        _balances[msg.sender] = add(_balances[msg.sender], wad);
-        _supply = add(_supply, wad);
+    function mint(uint128 wad) auth {
+        bals[msg.sender] = add(bals[msg.sender], wad);
+        size = add(size, wad);
     }
     function burn(uint128 wad) auth {
-        _balances[msg.sender] = sub(_balances[msg.sender], wad);
-        _supply = sub(_supply, wad);
+        bals[msg.sender] = sub(bals[msg.sender], wad);
+        size = sub(size, wad);
     }
 }
