@@ -14,6 +14,8 @@ pragma solidity ^0.4.10;
 import "erc20/erc20.sol";
 import "ds-math/math.sol";
 
+
+// TODO rename "DSTokenBase" to "NaiveToken" or similar
 contract DSTokenBase is ERC20, DSMath {
     uint256                                            _supply;
     mapping (address => uint256)                       _balances;

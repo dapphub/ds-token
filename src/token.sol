@@ -1,4 +1,4 @@
-/// token.sol -- ERC20 implementation with minting and burning
+/// token.sol -- dappsys-flavored ERC20
 
 // Copyright (C) 2015, 2016, 2017  DappHub, LLC
 
@@ -9,20 +9,35 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
+import 'ds-thing/thing.sol';
+
 pragma solidity ^0.4.15;
 
-contract DSToken {
-    function push(address dst, uint128 wad) returns (bool) {
-        return transfer(dst, wad);
+contract DSToken is DSThing {
+    mapping(address=>uint256) bals;
+    mapping(address=>mapping(address=>bool)) deps;  // hodler->spender->ok
+
+    // ERC20 compatability because standards
+    uint256                                      public totalSupply;
+    mapping(address=>uint256)                    public balances;
+    mapping(address=>mapping(address=>uint256))  public allowance;
+    
+    function move(address src, address dst, uint128 wad) {
+        require(src == msg.sender || deps[src][msg.sender]);
+        balances[src] = sub(balances[src], wad);
+        balances[dst] = add(balances[src], wad);
     }
-    function pull(address src, uint128 wad) returns (bool) {
-        return transferFrom(src, msg.sender, wad);
+    function push(address dst, uint128 wad) {
+        move(msg.sender, dst, wad);
     }
-    function mint(uint128 wad) auth stoppable note {
+    function pull(address src, uint128 wad) {
+        move(src, msg.sender, wad);
+    }
+    function mint(uint128 wad) auth{
         _balances[msg.sender] = add(_balances[msg.sender], wad);
         _supply = add(_supply, wad);
     }
-    function burn(uint128 wad) auth stoppable note {
+    function burn(uint128 wad) auth {
         _balances[msg.sender] = sub(_balances[msg.sender], wad);
         _supply = sub(_supply, wad);
     }
