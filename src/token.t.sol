@@ -25,13 +25,13 @@ contract TokenUser {
     function doTransferFrom(address from, address to, uint amount)
         returns (bool)
     {
-        return token.transferFrom(from, to, amount);
+        return token.move(from, to, cast(amount));
     }
 
     function doTransfer(address to, uint amount)
         returns (bool)
     {
-        return token.transfer(to, amount);
+        return token.push(to, amount);
     }
 
     function doApprove(address recipient, uint amount)
@@ -79,7 +79,7 @@ contract DSTokenTest is DSTest {
     }
 
     function testTransferCost() logs_gas {
-        token.transfer(address(0), 10);
+        token.push(address(0), 10);
     }
 
     function testAllowanceStartsAtZero() logs_gas {
@@ -89,20 +89,20 @@ contract DSTokenTest is DSTest {
     function testValidTransfers() logs_gas {
         uint sentAmount = 250;
         log_named_address("token11111", token);
-        token.transfer(user2, sentAmount);
+        token.push(user2, sentAmount);
         assertEq(token.balanceOf(user2), sentAmount);
         assertEq(token.balanceOf(this), initialBalance - sentAmount);
     }
 
     function testFailWrongAccountTransfers() logs_gas {
         uint sentAmount = 250;
-        token.transferFrom(user2, this, sentAmount);
+        token.move(user2, this, sentAmount);
     }
 
     function testFailInsufficientFundsTransfers() logs_gas {
         uint sentAmount = 250;
-        token.transfer(user1, initialBalance - sentAmount);
-        token.transfer(user2, sentAmount + 1);
+        token.push(user1, initialBalance - sentAmount);
+        token.push(user2, sentAmount + 1);
     }
 
     function testApproveSetsAllowance() logs_gas {
@@ -123,15 +123,15 @@ contract DSTokenTest is DSTest {
 
     function testFailTransferWithoutApproval() logs_gas {
         address self = this;
-        token.transfer(user1, 50);
-        token.transferFrom(user1, self, 1);
+        token.push(user1, 50);
+        token.move(user1, self, 1);
     }
 
     function testFailChargeMoreThanApproved() logs_gas {
         address self = this;
-        token.transfer(user1, 50);
+        token.push(user1, 50);
         user1.doApprove(self, 20);
-        token.transferFrom(user1, self, 21);
+        token.move(user1, self, 21);
     }
 
     function testMint() logs_gas {
@@ -148,7 +148,7 @@ contract DSTokenTest is DSTest {
 
     function testFailTransferWhenStopped() logs_gas {
         token.stop();
-        token.transfer(user1, 10);
+        token.push(user1, 10);
     }
 
     function testSetName() logs_gas {

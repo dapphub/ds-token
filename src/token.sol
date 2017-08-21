@@ -15,28 +15,38 @@ pragma solidity ^0.4.15;
 
 contract DSToken is DSThing
 {
-    uint256                                   public size;
+    uint128                                   public size;
     mapping(address=>uint256)                 public bals;
     mapping(address=>mapping(address=>bool))  public deps;  // hodler->spender->ok
 
     function move(address src, address dst, uint128 wad)
     {
         require(src == msg.sender || deps[src][msg.sender]);
-        balances[src] = sub(balances[src], wad);
-        balances[dst] = add(balances[src], wad);
+        bals[src] = wsub(balances[src], wad);
+        bals[dst] = wadd(balances[src], wad);
     }
-    function push(address dst, uint128 wad) {
+
+    function push(address dst, uint128 wad)
+    {
         move(msg.sender, dst, wad);
     }
-    function pull(address src, uint128 wad) {
+
+    function pull(address src, uint128 wad)
+    {
         move(src, msg.sender, wad);
     }
-    function mint(uint128 wad) auth {
-        bals[msg.sender] = add(bals[msg.sender], wad);
-        size = add(size, wad);
+
+    function mint(uint128 wad)
+        auth
+    {
+        bals[msg.sender] = wadd(bals[msg.sender], wad);
+        size = wadd(size, wad);
     }
-    function burn(uint128 wad) auth {
-        bals[msg.sender] = sub(bals[msg.sender], wad);
-        size = sub(size, wad);
+
+    function burn(uint128 wad)
+        auth
+    {
+        bals[msg.sender] = wsub(bals[msg.sender], wad);
+        size = wsub(size, wad);
     }
 }
