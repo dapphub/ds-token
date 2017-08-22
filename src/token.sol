@@ -20,6 +20,7 @@ contract DSToken is DSThing
     mapping(address=>mapping(address=>bool))  public deps;  // hodler->spender->ok
 
     function move(address src, address dst, uint128 wad)
+        note
     {
         require(src == msg.sender || deps[src][msg.sender]);
         bals[src] = wsub(bals[src], wad);
@@ -27,17 +28,20 @@ contract DSToken is DSThing
     }
 
     function push(address dst, uint128 wad)
+        note
     {
         move(msg.sender, dst, wad);
     }
 
     function pull(address src, uint128 wad)
+        note
     {
         move(src, msg.sender, wad);
     }
 
     function mint(uint128 wad)
         auth
+        note
     {
         bals[msg.sender] = wadd(bals[msg.sender], wad);
         size = wadd(size, wad);
@@ -45,6 +49,7 @@ contract DSToken is DSThing
 
     function burn(uint128 wad)
         auth
+        note
     {
         bals[msg.sender] = wsub(bals[msg.sender], wad);
         size = wsub(size, wad);
