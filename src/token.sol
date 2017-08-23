@@ -36,7 +36,7 @@ contract DSToken is DSThing
     function deny(address who)
         note
     {
-        depos[msg.sender][who] = false;
+        deps[msg.sender][who] = false;
     }
 
     function push(address dst, uint128 wad)
