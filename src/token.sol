@@ -1,4 +1,4 @@
-/// token.sol -- dappsys-flavored ERC20
+/// token.sol -- dappsys-flavored anti-ERC20
 
 // Copyright (C) 2015, 2016, 2017  DappHub, LLC
 
@@ -27,14 +27,26 @@ contract DSToken is DSThing
         bals[dst] = wadd(bals[src], wad);
     }
 
-    function push(address dst, uint128 wad)
+    function rely(address who)
         note
+    {
+        deps[msg.sender][who] = true;
+    }
+    
+    function deny(address who)
+        note
+    {
+        depos[msg.sender][who] = false;
+    }
+
+    function push(address dst, uint128 wad)
+        // note: move notes
     {
         move(msg.sender, dst, wad);
     }
 
     function pull(address src, uint128 wad)
-        note
+        // note : move notes
     {
         move(src, msg.sender, wad);
     }
