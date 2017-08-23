@@ -27,10 +27,20 @@ contract DSToken is DSTokenBase(0), DSStop {
     function transfer(address dst, uint wad) stoppable note returns (bool) {
         return super.transfer(dst, wad);
     }
-    function transferFrom(
-        address src, address dst, uint wad
-    ) stoppable note returns (bool) {
-        return super.transferFrom(src, dst, wad);
+    function transferFrom(address src, address dst, uint wad)
+        stoppable note returns (bool) {
+        require(_balances[src] >= wad);
+        require(_approvals[src][msg.sender] >= wad);
+
+        if (_approvals[src][msg.sender] < uint(-1)) {
+            _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
+        }
+        _balances[src] = sub(_balances[src], wad);
+        _balances[dst] = add(_balances[dst], wad);
+
+        Transfer(src, dst, wad);
+
+        return true;
     }
     function approve(address guy, uint wad) stoppable note returns (bool) {
         return super.approve(guy, wad);
@@ -50,6 +60,12 @@ contract DSToken is DSTokenBase(0), DSStop {
     function burn(uint128 wad) auth stoppable note {
         _balances[msg.sender] = sub(_balances[msg.sender], wad);
         _supply = sub(_supply, wad);
+    }
+    function rely(address guy) stoppable note returns (bool) {
+        return super.approve(guy, uint(-1));
+    }
+    function deny(address guy) stoppable note returns (bool) {
+        return super.approve(guy, 0);
     }
 
     // Optional token name

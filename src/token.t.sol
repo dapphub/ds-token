@@ -53,7 +53,6 @@ contract TokenUser {
     function doSetName(bytes32 name) constant {
         token.setName(name);
     }
-
 }
 
 contract DSTokenTest is DSTest {
@@ -159,6 +158,18 @@ contract DSTokenTest is DSTest {
 
     function testFailSetName() logs_gas {
         user1.doSetName("Test");
+    }
+
+    function testBoolApprove() logs_gas {
+        assertEq(token.balanceOf(this), 1000);
+        token.rely(user1);
+        assertEq(token.allowance(this, user1), uint(-1));
+        assert(user1.doTransferFrom(this, user1, 10));
+        assertEq(token.balanceOf(this), 990);
+        assertEq(token.allowance(this, user1), uint(-1));
+
+        token.deny(user1);
+        assertEq(token.allowance(this, user1), 0);
     }
 
 }
