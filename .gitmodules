@@ -10,6 +10,3 @@
 [submodule "lib/ds-stop"]
 	path = lib/ds-stop
 	url = https://github.com/dapphub/ds-stop
-[submodule "lib/ds-thing"]
-	path = lib/ds-thing
-	url = https://github.com/dapphub/ds-thing

@@ -1,0 +1,1 @@
+An ERC20 token with DSAuth-protected `mint()' and `burn()' functions.
