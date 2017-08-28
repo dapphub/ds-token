@@ -1,4 +1,4 @@
-/// token.sol -- dappsys-flavored anti-ERC20
+/// token.sol -- ERC20 implementation with minting and burning
 
 // Copyright (C) 2015, 2016, 2017  DappHub, LLC
 
@@ -9,61 +9,55 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
-import 'ds-thing/thing.sol';
+pragma solidity ^0.4.10;
 
-pragma solidity ^0.4.15;
+import "ds-stop/stop.sol";
 
-contract DSToken is DSThing
-{
-    uint128                                   public size;
-    mapping(address=>uint128)                 public bals;
-    mapping(address=>mapping(address=>bool))  public deps;  // hodler->spender->ok
+import "./base.sol";
 
-    function move(address src, address dst, uint128 wad)
-        note
-    {
-        require(src == msg.sender || deps[src][msg.sender]);
-        bals[src] = wsub(bals[src], wad);
-        bals[dst] = wadd(bals[src], wad);
+contract DSToken is DSTokenBase(0), DSStop {
+
+    bytes32  public  symbol;
+    uint256  public  decimals = 18; // standard token precision. override to customize
+
+    function DSToken(bytes32 symbol_) {
+        symbol = symbol_;
     }
 
-    function rely(address who)
-        note
-    {
-        deps[msg.sender][who] = true;
+    function transfer(address dst, uint wad) stoppable note returns (bool) {
+        return super.transfer(dst, wad);
     }
+    function transferFrom(
+        address src, address dst, uint wad
+    ) stoppable note returns (bool) {
+        return super.transferFrom(src, dst, wad);
+    }
+    function approve(address guy, uint wad) stoppable note returns (bool) {
+        return super.approve(guy, wad);
+    }
+
+    function push(address dst, uint128 wad) returns (bool) {
+        return transfer(dst, wad);
+    }
+    function pull(address src, uint128 wad) returns (bool) {
+        return transferFrom(src, msg.sender, wad);
+    }
+
+    function mint(uint128 wad) auth stoppable note {
+        _balances[msg.sender] = add(_balances[msg.sender], wad);
+        _supply = add(_supply, wad);
+    }
+    function burn(uint128 wad) auth stoppable note {
+        _balances[msg.sender] = sub(_balances[msg.sender], wad);
+        _supply = sub(_supply, wad);
+    }
+
+    // Optional token name
+
+    bytes32   public  name = "";
     
-    function deny(address who)
-        note
-    {
-        deps[msg.sender][who] = false;
+    function setName(bytes32 name_) auth {
+        name = name_;
     }
 
-    function push(address dst, uint128 wad)
-        // note: move notes
-    {
-        move(msg.sender, dst, wad);
-    }
-
-    function pull(address src, uint128 wad)
-        // note : move notes
-    {
-        move(src, msg.sender, wad);
-    }
-
-    function mint(uint128 wad)
-        auth
-        note
-    {
-        bals[msg.sender] = wadd(bals[msg.sender], wad);
-        size = wadd(size, wad);
-    }
-
-    function burn(uint128 wad)
-        auth
-        note
-    {
-        bals[msg.sender] = wsub(bals[msg.sender], wad);
-        size = wsub(size, wad);
-    }
 }

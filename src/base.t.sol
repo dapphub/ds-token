@@ -1,4 +1,4 @@
-/// token.t.sol -- test for token.sol
+/// base.t.sol -- test for base.sol
 
 // Copyright (C) 2015, 2016, 2017  DappHub, LLC
 
@@ -13,12 +13,12 @@ pragma solidity ^0.4.10;
 
 import "ds-test/test.sol";
 
-import "./token.sol";
+import "./base.sol";
 
 contract TokenUser {
-    DSToken  token;
+    ERC20  token;
 
-    function TokenUser(DSToken token_) {
+    function TokenUser(ERC20 token_) {
         token = token_;
     }
 
@@ -49,36 +49,30 @@ contract TokenUser {
     function doBalanceOf(address who) constant returns (uint) {
         return token.balanceOf(who);
     }
-
-    function doSetName(bytes32 name) constant {
-        token.setName(name);
-    }
-
 }
 
-contract DSTokenTest is DSTest {
-    uint128 constant initialBalance = 1000;
+contract DSTokenBaseTest is DSTest {
+    uint constant initialBalance = 1000;
 
-    DSToken token;
+    ERC20 token;
     TokenUser user1;
     TokenUser user2;
 
     function setUp() {
         token = createToken();
-        token.mint(initialBalance);
         user1 = new TokenUser(token);
         user2 = new TokenUser(token);
     }
 
-    function createToken() internal returns (DSToken) {
-        return new DSToken("TST");
+    function createToken() internal returns (ERC20) {
+        return new DSTokenBase(initialBalance);
     }
 
     function testSetupPrecondition() {
         assertEq(token.balanceOf(this), initialBalance);
     }
 
-    function testTransferCost() logs_gas {
+    function testTransferCost() logs_gas() {
         token.transfer(address(0), 10);
     }
 
@@ -102,8 +96,9 @@ contract DSTokenTest is DSTest {
     function testFailInsufficientFundsTransfers() logs_gas {
         uint sentAmount = 250;
         token.transfer(user1, initialBalance - sentAmount);
-        token.transfer(user2, sentAmount + 1);
+        token.transfer(user2, sentAmount+1);
     }
+
 
     function testApproveSetsAllowance() logs_gas {
         log_named_address("Test", this);
@@ -133,33 +128,5 @@ contract DSTokenTest is DSTest {
         user1.doApprove(self, 20);
         token.transferFrom(user1, self, 21);
     }
-
-    function testMint() logs_gas {
-        uint128 mintAmount = 10;
-        token.mint(mintAmount);
-        assertEq(token.totalSupply(), initialBalance + mintAmount);
-    }
-
-    function testBurn() logs_gas {
-        uint128 burnAmount = 10;
-        token.burn(burnAmount);
-        assertEq(token.totalSupply(), initialBalance - burnAmount);
-    }
-
-    function testFailTransferWhenStopped() logs_gas {
-        token.stop();
-        token.transfer(user1, 10);
-    }
-
-    function testSetName() logs_gas {
-        assertEq(token.name(), "");
-        token.setName("Test");
-        assertEq(token.name(), "Test");
-    }
-
-    function testFailSetName() logs_gas {
-        user1.doSetName("Test");
-    }
-
 }
 
