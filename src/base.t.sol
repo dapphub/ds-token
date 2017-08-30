@@ -9,7 +9,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.13;
 
 import "ds-test/test.sol";
 
@@ -112,7 +112,7 @@ contract DSTokenBaseTest is DSTest {
     function testChargesAmountApproved() logs_gas {
         uint amountApproved = 20;
         token.approve(user2, amountApproved);
-        assert(user2.doTransferFrom(this, user2, amountApproved));
+        assertTrue(user2.doTransferFrom(this, user2, amountApproved));
         assertEq(token.balanceOf(this), initialBalance - amountApproved);
     }
 
