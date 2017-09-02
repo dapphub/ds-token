@@ -68,6 +68,10 @@ contract DSToken is DSTokenBase(0), DSStop {
     function pull(address src, uint128 wad) returns (bool) {
         return transferFrom(src, msg.sender, wad);
     }
+    function move(address src, address dst, uint128 wad) returns (bool) {
+        return transferFrom(src, dst, wad);
+    }
+
 
     function mint(uint128 wad) auth stoppable note {
         _balances[msg.sender] = add(_balances[msg.sender], wad);
