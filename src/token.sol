@@ -73,9 +73,12 @@ contract DSToken is DSTokenBase(0), DSStop {
     }
 
 
-    function mint(uint128 wad) auth stoppable note {
-        _balances[msg.sender] = add(_balances[msg.sender], wad);
+    function mint(address guy, uint128 wad) auth stoppable note {
+        _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
+    }
+    function mint(uint128 wad) {
+        mint(msg.sender, wad);
     }
     function burn(uint128 wad) auth stoppable note {
         _balances[msg.sender] = sub(_balances[msg.sender], wad);

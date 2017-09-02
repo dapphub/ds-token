@@ -134,13 +134,23 @@ contract DSTokenTest is DSTest {
         token.transferFrom(user1, self, 21);
     }
 
-    function testMint() logs_gas {
+    function testMint() {
         uint128 mintAmount = 10;
         token.mint(mintAmount);
         assertEq(token.totalSupply(), initialBalance + mintAmount);
     }
+    function testMintThis() {
+        uint128 mintAmount = 10;
+        token.mint(mintAmount);
+        assertEq(token.balanceOf(this), initialBalance + mintAmount);
+    }
+    function testMintGuy() {
+        uint128 mintAmount = 10;
+        token.mint(user1, mintAmount);
+        assertEq(token.balanceOf(user1), mintAmount);
+    }
 
-    function testBurn() logs_gas {
+    function testBurn() {
         uint128 burnAmount = 10;
         token.burn(burnAmount);
         assertEq(token.totalSupply(), initialBalance - burnAmount);
