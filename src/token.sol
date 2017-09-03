@@ -36,12 +36,11 @@ contract DSToken is DSTokenBase(0), DSStop {
         Trust(msg.sender, guy, wat);
     }
 
-    function transfer(address dst, uint wad) stoppable note returns (bool) {
+    function transfer(address dst, uint wad) stoppable returns (bool) {
         return super.transfer(dst, wad);
     }
     function transferFrom(address src, address dst, uint wad)
         stoppable
-        note
         returns (bool)
     {
         assert(_balances[src] >= wad);
@@ -58,7 +57,7 @@ contract DSToken is DSTokenBase(0), DSStop {
 
         return true;
     }
-    function approve(address guy, uint wad) stoppable note returns (bool) {
+    function approve(address guy, uint wad) stoppable returns (bool) {
         return super.approve(guy, wad);
     }
 
