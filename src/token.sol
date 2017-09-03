@@ -61,25 +61,25 @@ contract DSToken is DSTokenBase(0), DSStop {
         return super.approve(guy, wad);
     }
 
-    function push(address dst, uint128 wad) returns (bool) {
+    function push(address dst, uint wad) returns (bool) {
         return transfer(dst, wad);
     }
-    function pull(address src, uint128 wad) returns (bool) {
+    function pull(address src, uint wad) returns (bool) {
         return transferFrom(src, msg.sender, wad);
     }
-    function move(address src, address dst, uint128 wad) returns (bool) {
+    function move(address src, address dst, uint wad) returns (bool) {
         return transferFrom(src, dst, wad);
     }
 
 
-    function mint(address guy, uint128 wad) auth stoppable note {
+    function mint(address guy, uint wad) auth stoppable note {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
     }
-    function mint(uint128 wad) {
+    function mint(uint wad) {
         mint(msg.sender, wad);
     }
-    function burn(uint128 wad) auth stoppable note {
+    function burn(uint wad) auth stoppable note {
         _balances[msg.sender] = sub(_balances[msg.sender], wad);
         _supply = sub(_supply, wad);
     }
