@@ -189,10 +189,45 @@ contract DSTokenTest is DSTest {
     }
 
 
-    function testFailTransferWhenStopped() logs_gas {
+    function testFailTransferWhenStopped() {
         token.stop();
         token.transfer(user1, 10);
     }
+    function testFailTransferFromWhenStopped() {
+        token.stop();
+        user1.doTransferFrom(this, user2, 10);
+    }
+    function testFailPushWhenStopped() {
+        token.stop();
+        token.push(user1, 10);
+    }
+    function testFailPullWhenStopped() {
+        token.trust(user1, true);
+        token.stop();
+        user1.doPull(this, 10);
+    }
+    function testFailMoveWhenStopped() {
+        token.trust(user1, true);
+        token.stop();
+        token.move(this, user2, 10);
+    }
+    function testFailMintWhenStopped() {
+        token.stop();
+        token.mint(10);
+    }
+    function testFailMintGuyWhenStopped() {
+        token.stop();
+        token.mint(user1, 10);
+    }
+    function testFailBurnWhenStopped() {
+        token.stop();
+        token.burn(10);
+    }
+    function testFailTrustWhenStopped() {
+        token.stop();
+        token.trust(user1, true);
+    }
+
 
     function testSetName() logs_gas {
         assertEq(token.name(), "");
