@@ -50,7 +50,7 @@ contract TokenUser {
         return token.balanceOf(who);
     }
 
-    function doSetName(bytes32 name) constant {
+    function doSetName(bytes32 name) {
         token.setName(name);
     }
 
