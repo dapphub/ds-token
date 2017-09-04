@@ -54,6 +54,19 @@ contract TokenUser {
         token.setName(name);
     }
 
+    function doPush(address who, uint amount) {
+        token.push(who, amount);
+    }
+    function doPull(address who, uint amount) {
+        token.pull(who, amount);
+    }
+    function doMove(address src, address dst, uint amount) {
+        token.move(src, dst, amount);
+    }
+    function doTrust(address guy, bool wat) {
+        token.trust(guy, wat);
+    }
+
 }
 
 contract DSTokenTest is DSTest {
@@ -206,6 +219,32 @@ contract DSTokenTest is DSTest {
         token.trust(user1, true);
         user1.doTransferFrom(this, user2, 200);
         assertEq(token.balanceOf(user2), 200);
+    }
+
+    function testPush() {
+        assertEq(token.balanceOf(this), 1000);
+        assertEq(token.balanceOf(user1), 0);
+        token.push(user1, 1000);
+        assertEq(token.balanceOf(this), 0);
+        assertEq(token.balanceOf(user1), 1000);
+        user1.doPush(user2, 200);
+        assertEq(token.balanceOf(this), 0);
+        assertEq(token.balanceOf(user1), 800);
+        assertEq(token.balanceOf(user2), 200);
+    }
+    function testFailPullWithoutTrust() {
+        user1.doPull(this, 1000);
+    }
+    function testPullWithTrust() {
+        token.trust(user1, true);
+        user1.doPull(this, 1000);
+    }
+    function testFailMoveWithoutTrust() {
+        user1.doMove(this, user2, 1000);
+    }
+    function testMoveWithTrust() {
+        token.trust(user1, true);
+        user1.doMove(this, user2, 1000);
     }
 }
 
