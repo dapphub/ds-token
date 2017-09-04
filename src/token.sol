@@ -61,14 +61,14 @@ contract DSToken is DSTokenBase(0), DSStop {
         return super.approve(guy, wad);
     }
 
-    function push(address dst, uint wad) returns (bool) {
-        return transfer(dst, wad);
+    function push(address dst, uint wad) {
+        transfer(dst, wad);
     }
-    function pull(address src, uint wad) returns (bool) {
-        return transferFrom(src, msg.sender, wad);
+    function pull(address src, uint wad) {
+        transferFrom(src, msg.sender, wad);
     }
-    function move(address src, address dst, uint wad) returns (bool) {
-        return transferFrom(src, dst, wad);
+    function move(address src, address dst, uint wad) {
+        transferFrom(src, dst, wad);
     }
 
 
