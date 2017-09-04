@@ -27,6 +27,8 @@ contract DSToken is DSTokenBase(0), DSStop {
     }
 
     event Trust(address indexed src, address indexed guy, bool wat);
+    event Mint(address indexed guy, uint wad);
+    event Burn(address indexed guy, uint wad);
 
     function trusted(address src, address guy) returns (bool) {
         return _trusted[src][guy];
@@ -72,16 +74,18 @@ contract DSToken is DSTokenBase(0), DSStop {
     }
 
 
-    function mint(address guy, uint wad) auth stoppable note {
+    function mint(address guy, uint wad) auth stoppable {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
+        Mint(guy, wad);
     }
     function mint(uint wad) {
         mint(msg.sender, wad);
     }
-    function burn(uint wad) auth stoppable note {
+    function burn(uint wad) auth stoppable {
         _balances[msg.sender] = sub(_balances[msg.sender], wad);
         _supply = sub(_supply, wad);
+        Burn(msg.sender, wad);
     }
 
     // Optional token name
