@@ -45,10 +45,10 @@ contract DSToken is DSTokenBase(0), DSStop {
         stoppable
         returns (bool)
     {
-        assert(_balances[src] >= wad);
+        require(_balances[src] >= wad);
 
         if (!_trusted[src][msg.sender]) {
-            assert(_approvals[src][msg.sender] >= wad);
+            require(_approvals[src][msg.sender] >= wad);
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
