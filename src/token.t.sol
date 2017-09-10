@@ -66,6 +66,18 @@ contract TokenUser {
     function doTrust(address guy, bool wat) {
         token.trust(guy, wat);
     }
+    function doMint(uint wad) {
+        token.mint(wad);
+    }
+    function doBurn(uint wad) {
+        token.burn(wad);
+    }
+    function doMint(address guy, uint wad) {
+        token.mint(guy, wad);
+    }
+    function doBurn(address guy, uint wad) {
+        token.burn(guy, wad);
+    }
 
 }
 
@@ -162,6 +174,20 @@ contract DSTokenTest is DSTest {
         token.mint(user1, mintAmount);
         assertEq(token.balanceOf(user1), mintAmount);
     }
+    function testFailMintNoAuth() {
+        user1.doMint(10);
+    }
+    function testMintAuth() {
+        token.setOwner(user1);
+        user1.doMint(10);
+    }
+    function testFailMintGuyNoAuth() {
+        user1.doMint(user2, 10);
+    }
+    function testMintGuyAuth() {
+        token.setOwner(user1);
+        user1.doMint(user2, 10);
+    }
 
     function testBurn() {
         uint128 burnAmount = 10;
@@ -186,6 +212,26 @@ contract DSTokenTest is DSTest {
         user1.doTrust(this, true);
         token.burn(user1, burnAmount);
         assertEq(token.balanceOf(user1), 0);
+    }
+    function testFailBurnNoAuth() {
+        token.transfer(user1, 10);
+        user1.doBurn(10);
+    }
+    function testBurnAuth() {
+        token.transfer(user1, 10);
+        token.setOwner(user1);
+        user1.doBurn(10);
+    }
+    function testFailBurnGuyNoAuth() {
+        token.transfer(user2, 10);
+        user2.doTrust(user1, true);
+        user1.doBurn(user2, 10);
+    }
+    function testBurnGuyAuth() {
+        token.transfer(user2, 10);
+        token.setOwner(user1);
+        user2.doTrust(user1, true);
+        user1.doBurn(user2, 10);
     }
 
 
