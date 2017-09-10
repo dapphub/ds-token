@@ -74,18 +74,26 @@ contract DSToken is DSTokenBase(0), DSStop {
     }
 
 
+    function mint(uint wad) {
+        mint(msg.sender, wad);
+    }
+    function burn(uint wad) {
+        burn(msg.sender, wad);
+    }
     function mint(address guy, uint wad) auth stoppable {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
         Mint(guy, wad);
     }
-    function mint(uint wad) {
-        mint(msg.sender, wad);
-    }
-    function burn(uint wad) auth stoppable {
-        _balances[msg.sender] = sub(_balances[msg.sender], wad);
+    function burn(address guy, uint wad) auth stoppable {
+        if (guy != msg.sender && !_trusted[guy][msg.sender]) {
+            require(_approvals[guy][msg.sender] >= wad);
+            _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
+        }
+
+        _balances[guy] = sub(_balances[guy], wad);
         _supply = sub(_supply, wad);
-        Burn(msg.sender, wad);
+        Burn(guy, wad);
     }
 
     // Optional token name

@@ -155,6 +155,26 @@ contract DSTokenTest is DSTest {
         token.burn(burnAmount);
         assertEq(token.totalSupply(), initialBalance - burnAmount);
     }
+    function testBurnThis() {
+        uint128 burnAmount = 10;
+        token.burn(burnAmount);
+        assertEq(token.balanceOf(this), initialBalance - burnAmount);
+    }
+    function testFailBurnGuyWithoutTrust() {
+        uint128 burnAmount = 10;
+        token.push(user1, burnAmount);
+        token.burn(user1, burnAmount);
+    }
+    function testBurnGuyWithTrust() {
+        uint128 burnAmount = 10;
+        token.push(user1, burnAmount);
+        assertEq(token.balanceOf(user1), burnAmount);
+
+        user1.doTrust(this, true);
+        token.burn(user1, burnAmount);
+        assertEq(token.balanceOf(user1), 0);
+    }
+
 
     function testFailTransferWhenStopped() logs_gas {
         token.stop();
