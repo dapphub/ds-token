@@ -82,7 +82,7 @@ contract TokenUser {
 }
 
 contract DSTokenTest is DSTest {
-    uint128 constant initialBalance = 1000;
+    uint constant initialBalance = 1000;
 
     DSToken token;
     TokenUser user1;
@@ -160,17 +160,17 @@ contract DSTokenTest is DSTest {
     }
 
     function testMint() {
-        uint128 mintAmount = 10;
+        uint mintAmount = 10;
         token.mint(mintAmount);
         assertEq(token.totalSupply(), initialBalance + mintAmount);
     }
     function testMintThis() {
-        uint128 mintAmount = 10;
+        uint mintAmount = 10;
         token.mint(mintAmount);
         assertEq(token.balanceOf(this), initialBalance + mintAmount);
     }
     function testMintGuy() {
-        uint128 mintAmount = 10;
+        uint mintAmount = 10;
         token.mint(user1, mintAmount);
         assertEq(token.balanceOf(user1), mintAmount);
     }
@@ -190,22 +190,22 @@ contract DSTokenTest is DSTest {
     }
 
     function testBurn() {
-        uint128 burnAmount = 10;
+        uint burnAmount = 10;
         token.burn(burnAmount);
         assertEq(token.totalSupply(), initialBalance - burnAmount);
     }
     function testBurnThis() {
-        uint128 burnAmount = 10;
+        uint burnAmount = 10;
         token.burn(burnAmount);
         assertEq(token.balanceOf(this), initialBalance - burnAmount);
     }
     function testFailBurnGuyWithoutTrust() {
-        uint128 burnAmount = 10;
+        uint burnAmount = 10;
         token.push(user1, burnAmount);
         token.burn(user1, burnAmount);
     }
     function testBurnGuyWithTrust() {
-        uint128 burnAmount = 10;
+        uint burnAmount = 10;
         token.push(user1, burnAmount);
         assertEq(token.balanceOf(user1), burnAmount);
 
