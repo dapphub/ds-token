@@ -19,18 +19,18 @@ contract DSTokenBase is ERC20, DSMath {
     mapping (address => uint256)                       _balances;
     mapping (address => mapping (address => uint256))  _approvals;
     
-    function DSTokenBase(uint256 supply) {
+    function DSTokenBase(uint supply) {
         _balances[msg.sender] = supply;
         _supply = supply;
     }
     
-    function totalSupply() constant returns (uint256) {
+    function totalSupply() constant returns (uint) {
         return _supply;
     }
-    function balanceOf(address src) constant returns (uint256) {
+    function balanceOf(address src) constant returns (uint) {
         return _balances[src];
     }
-    function allowance(address src, address guy) constant returns (uint256) {
+    function allowance(address src, address guy) constant returns (uint) {
         return _approvals[src][guy];
     }
     
@@ -58,7 +58,7 @@ contract DSTokenBase is ERC20, DSMath {
         return true;
     }
     
-    function approve(address guy, uint256 wad) returns (bool) {
+    function approve(address guy, uint wad) returns (bool) {
         _approvals[msg.sender][guy] = wad;
         
         Approval(msg.sender, guy, wad);
