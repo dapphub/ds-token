@@ -30,7 +30,7 @@ contract DSToken is DSTokenBase(0), DSStop {
     event Mint(address indexed guy, uint wad);
     event Burn(address indexed guy, uint wad);
 
-    function trusted(address src, address guy) returns (bool) {
+    function trusted(address src, address guy) constant returns (bool) {
         return _trusted[src][guy];
     }
     function trust(address guy, bool wat) stoppable {
