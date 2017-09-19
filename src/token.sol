@@ -67,7 +67,6 @@ contract DSToken is DSTokenBase(0), DSStop {
         transferFrom(src, dst, wad);
     }
 
-
     function mint(uint wad) {
         mint(msg.sender, wad);
     }
@@ -90,11 +89,9 @@ contract DSToken is DSTokenBase(0), DSStop {
     }
 
     // Optional token name
-
     bytes32   public  name = "";
 
     function setName(bytes32 name_) auth {
         name = name_;
     }
-
 }
