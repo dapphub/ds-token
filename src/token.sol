@@ -45,10 +45,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         stoppable
         returns (bool)
     {
-        require(_balances[src] >= wad);
-
         if (src != msg.sender && !_trusted[src][msg.sender]) {
-            require(_approvals[src][msg.sender] >= wad);
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
@@ -84,7 +81,6 @@ contract DSToken is DSTokenBase(0), DSStop {
     }
     function burn(address guy, uint wad) auth stoppable {
         if (guy != msg.sender && !_trusted[guy][msg.sender]) {
-            require(_approvals[guy][msg.sender] >= wad);
             _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
         }
 
