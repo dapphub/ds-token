@@ -35,21 +35,17 @@ contract DSTokenBase is ERC20, DSMath {
     }
     
     function transfer(address dst, uint wad) returns (bool) {
-        require(_balances[msg.sender] >= wad);
-        
-        _balances[msg.sender] = sub(_balances[msg.sender], wad);
-        _balances[dst] = add(_balances[dst], wad);
-        
-        Transfer(msg.sender, dst, wad);
-        
-        return true;
+        return transferFrom(msg.sender, dst, wad);
     }
     
     function transferFrom(address src, address dst, uint wad) returns (bool) {
         require(_balances[src] >= wad);
-        require(_approvals[src][msg.sender] >= wad);
-        
-        _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
+
+        if (src != msg.sender) {
+            require(_approvals[src][msg.sender] >= wad);
+            _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
+        }
+
         _balances[src] = sub(_balances[src], wad);
         _balances[dst] = add(_balances[dst], wad);
         

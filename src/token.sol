@@ -38,8 +38,8 @@ contract DSToken is DSTokenBase(0), DSStop {
         Trust(msg.sender, guy, wat);
     }
 
-    function transfer(address dst, uint wad) stoppable returns (bool) {
-        return super.transfer(dst, wad);
+    function approve(address guy, uint wad) stoppable returns (bool) {
+        return super.approve(guy, wad);
     }
     function transferFrom(address src, address dst, uint wad)
         stoppable
@@ -47,7 +47,7 @@ contract DSToken is DSTokenBase(0), DSStop {
     {
         require(_balances[src] >= wad);
 
-        if (!_trusted[src][msg.sender]) {
+        if (src != msg.sender && !_trusted[src][msg.sender]) {
             require(_approvals[src][msg.sender] >= wad);
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
@@ -59,12 +59,9 @@ contract DSToken is DSTokenBase(0), DSStop {
 
         return true;
     }
-    function approve(address guy, uint wad) stoppable returns (bool) {
-        return super.approve(guy, wad);
-    }
 
     function push(address dst, uint wad) {
-        transfer(dst, wad);
+        transferFrom(msg.sender, dst, wad);
     }
     function pull(address src, uint wad) {
         transferFrom(src, msg.sender, wad);

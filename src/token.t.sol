@@ -158,6 +158,12 @@ contract DSTokenTest is DSTest {
         user1.doApprove(self, 20);
         token.transferFrom(user1, self, 21);
     }
+    function testTransferFromSelf() {
+        // you always trust yourself
+        assertTrue(!token.trusted(this, this));
+        token.transferFrom(this, user1, 50);
+        assertEq(token.balanceOf(user1), 50);
+    }
 
     function testMint() {
         uint mintAmount = 10;
