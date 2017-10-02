@@ -22,7 +22,7 @@ contract DSToken is DSTokenBase(0), DSStop {
     bytes32  public  symbol;
     uint256  public  decimals = 18; // standard token precision. override to customize
 
-    function DSToken(bytes32 symbol_) {
+    function DSToken(bytes32 symbol_) public {
         symbol = symbol_;
     }
 
@@ -30,18 +30,19 @@ contract DSToken is DSTokenBase(0), DSStop {
     event Mint(address indexed guy, uint wad);
     event Burn(address indexed guy, uint wad);
 
-    function trusted(address src, address guy) constant returns (bool) {
+    function trusted(address src, address guy) public view returns (bool) {
         return _trusted[src][guy];
     }
-    function trust(address guy, bool wat) stoppable {
+    function trust(address guy, bool wat) public stoppable {
         _trusted[msg.sender][guy] = wat;
         Trust(msg.sender, guy, wat);
     }
 
-    function approve(address guy, uint wad) stoppable returns (bool) {
+    function approve(address guy, uint wad) public stoppable returns (bool) {
         return super.approve(guy, wad);
     }
     function transferFrom(address src, address dst, uint wad)
+        public
         stoppable
         returns (bool)
     {
@@ -57,28 +58,28 @@ contract DSToken is DSTokenBase(0), DSStop {
         return true;
     }
 
-    function push(address dst, uint wad) {
+    function push(address dst, uint wad) public {
         transferFrom(msg.sender, dst, wad);
     }
-    function pull(address src, uint wad) {
+    function pull(address src, uint wad) public {
         transferFrom(src, msg.sender, wad);
     }
-    function move(address src, address dst, uint wad) {
+    function move(address src, address dst, uint wad) public {
         transferFrom(src, dst, wad);
     }
 
-    function mint(uint wad) {
+    function mint(uint wad) public {
         mint(msg.sender, wad);
     }
-    function burn(uint wad) {
+    function burn(uint wad) public {
         burn(msg.sender, wad);
     }
-    function mint(address guy, uint wad) auth stoppable {
+    function mint(address guy, uint wad) public auth stoppable {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
         Mint(guy, wad);
     }
-    function burn(address guy, uint wad) auth stoppable {
+    function burn(address guy, uint wad) public auth stoppable {
         if (guy != msg.sender && !_trusted[guy][msg.sender]) {
             _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
         }
@@ -91,7 +92,7 @@ contract DSToken is DSTokenBase(0), DSStop {
     // Optional token name
     bytes32   public  name = "";
 
-    function setName(bytes32 name_) auth {
+    function setName(bytes32 name_) public auth {
         name = name_;
     }
 }
