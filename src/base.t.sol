@@ -104,6 +104,18 @@ contract DSTokenBaseTest is DSTest {
         token.transfer(user2, sentAmount+1);
     }
 
+    function testTransferFromSelf() public {
+        // you always approve yourself
+        assertEq(token.allowance(this, this), 0);
+        token.transferFrom(this, user1, 50);
+        assertEq(token.balanceOf(user1), 50);
+    }
+    function testFailTransferFromSelfNonArbitrarySize() public {
+        // you shouldn't be able to evade balance checks by transferring
+        // to yourself
+        token.transferFrom(this, this, token.balanceOf(this) + 1);
+    }
+
 
     function testApproveSetsAllowance() public logs_gas {
         log_named_address("Test", this);

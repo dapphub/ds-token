@@ -169,6 +169,11 @@ contract DSTokenTest is DSTest {
         token.transferFrom(this, user1, 50);
         assertEq(token.balanceOf(user1), 50);
     }
+    function testFailTransferFromSelfNonArbitrarySize() public {
+        // you shouldn't be able to evade balance checks by transferring
+        // to yourself
+        token.transferFrom(this, this, token.balanceOf(this) + 1);
+    }
 
     function testMint() public {
         uint mintAmount = 10;
