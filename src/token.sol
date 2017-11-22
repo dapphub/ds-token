@@ -23,8 +23,6 @@ import "./base.sol";
 
 contract DSToken is DSTokenBase(0), DSStop {
 
-    mapping (address => mapping (address => bool)) _trusted;
-
     bytes32  public  symbol;
     uint256  public  decimals = 18; // standard token precision. override to customize
 
@@ -32,27 +30,23 @@ contract DSToken is DSTokenBase(0), DSStop {
         symbol = symbol_;
     }
 
-    event Trust(address indexed src, address indexed guy, bool wat);
     event Mint(address indexed guy, uint wad);
     event Burn(address indexed guy, uint wad);
 
-    function trusted(address src, address guy) public view returns (bool) {
-        return _trusted[src][guy];
-    }
-    function trust(address guy, bool wat) public stoppable {
-        _trusted[msg.sender][guy] = wat;
-        Trust(msg.sender, guy, wat);
+    function approve(address guy) public stoppable returns (bool) {
+        return super.approve(guy, uint(-1));
     }
 
     function approve(address guy, uint wad) public stoppable returns (bool) {
         return super.approve(guy, wad);
     }
+
     function transferFrom(address src, address dst, uint wad)
         public
         stoppable
         returns (bool)
     {
-        if (src != msg.sender && !_trusted[src][msg.sender]) {
+        if (src != msg.sender && _approvals[src][msg.sender] != uint(-1)) {
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
@@ -86,7 +80,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         Mint(guy, wad);
     }
     function burn(address guy, uint wad) public auth stoppable {
-        if (guy != msg.sender && !_trusted[guy][msg.sender]) {
+        if (guy != msg.sender && _approvals[guy][msg.sender] != uint(-1)) {
             _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
         }
 
