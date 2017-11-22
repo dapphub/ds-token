@@ -30,7 +30,6 @@ contract DSToken is DSTokenBase(0), DSStop {
         symbol = symbol_;
     }
 
-    event Trust(address indexed src, address indexed guy, bool wat);
     event Mint(address indexed guy, uint wad);
     event Burn(address indexed guy, uint wad);
 
@@ -38,9 +37,11 @@ contract DSToken is DSTokenBase(0), DSStop {
         return src == guy || _approvals[src][guy] == uint(-1);
     }
     function trust(address guy, bool wat) public stoppable {
-        if (wat) approve(guy, uint(-1));
-        else approve(guy, 0);
-        Trust(msg.sender, guy, wat);
+        if (wat) {
+            approve(guy, uint(-1));
+        } else {
+            approve(guy, 0);
+        }
     }
 
     function approve(address guy, uint wad) public stoppable returns (bool) {
