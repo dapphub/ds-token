@@ -42,13 +42,6 @@ contract TokenUser {
         return token.transfer(to, amount);
     }
 
-    function doApprove(address recipient)
-        public
-        returns (bool)
-    {
-        return token.approve(recipient);
-    }
-
     function doApprove(address recipient, uint amount)
         public
         returns (bool)
@@ -72,6 +65,12 @@ contract TokenUser {
         token.setName(name);
     }
 
+    function doApprove(address guy)
+        public
+        returns (bool)
+    {
+        return token.approve(guy);
+    }
     function doPush(address who, uint amount) public {
         token.push(who, amount);
     }
