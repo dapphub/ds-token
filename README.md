@@ -6,16 +6,14 @@
 
 _An ERC20 Token with wholesome memes_
 
-Provides a standard [ERC20](https://theethereum.wiki/w/index.php/ERC20_Token_Standard)
-token interface plus [DSAuth](https://dapp.tools/dappsys/ds-auth)-protected 
-`mint` and `burn` functions; `trust` binary approval; as well as  `push`, `pull`
-and `move` aliases for `transferFrom` operations.
+Provides a standard [ERC20] token interface plus [DSAuth]-protected
+`mint` and `burn` functions; binary approval via `MAX_UINT`; as well as
+`push`, `pull` and `move` aliases for `transferFrom` operations.
+
+[ERC20]: https://theethereum.wiki/w/index.php/ERC20_Token_Standard
+[DSAuth]: https://dapp.tools/dappsys/ds-auth
 
 ### Custom Actions
-
-#### `trust`
-similar to `approve` but with a boolean argument for permitting or forbidding 
-transfers of any amount by a third party (requires auth)
 
 #### `mint`
 credit tokens at an address whilst simultaniously increasing `totalSupply` 
