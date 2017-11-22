@@ -23,8 +23,6 @@ import "./base.sol";
 
 contract DSToken is DSTokenBase(0), DSStop {
 
-    mapping (address => mapping (address => bool)) _trusted;
-
     bytes32  public  symbol;
     uint256  public  decimals = 18; // standard token precision. override to customize
 
@@ -37,10 +35,11 @@ contract DSToken is DSTokenBase(0), DSStop {
     event Burn(address indexed guy, uint wad);
 
     function trusted(address src, address guy) public view returns (bool) {
-        return _trusted[src][guy];
+        return _approvals[src][guy] == uint(-1);
     }
     function trust(address guy, bool wat) public stoppable {
-        _trusted[msg.sender][guy] = wat;
+        if (wat) approve(guy, uint(-1));
+        else approve(guy, 0);
         Trust(msg.sender, guy, wat);
     }
 
@@ -52,7 +51,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         stoppable
         returns (bool)
     {
-        if (src != msg.sender && !_trusted[src][msg.sender]) {
+        if (src != msg.sender && !trusted(src, msg.sender)){
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
@@ -86,7 +85,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         Mint(guy, wad);
     }
     function burn(address guy, uint wad) public auth stoppable {
-        if (guy != msg.sender && !_trusted[guy][msg.sender]) {
+        if (guy != msg.sender && !trusted(guy, msg.sender)) {
             _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
         }
 
