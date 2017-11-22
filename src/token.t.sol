@@ -42,6 +42,13 @@ contract TokenUser {
         return token.transfer(to, amount);
     }
 
+    function doApprove(address recipient)
+        public
+        returns (bool)
+    {
+        return token.approve(recipient);
+    }
+
     function doApprove(address recipient, uint amount)
         public
         returns (bool)
@@ -73,9 +80,6 @@ contract TokenUser {
     }
     function doMove(address src, address dst, uint amount) public {
         token.move(src, dst, amount);
-    }
-    function doTrust(address guy, bool wat) public {
-        token.trust(guy, wat);
     }
     function doMint(uint wad) public {
         token.mint(wad);
@@ -170,8 +174,6 @@ contract DSTokenTest is DSTest {
         token.transferFrom(user1, self, 21);
     }
     function testTransferFromSelf() public {
-        // you always trust yourself
-        assertTrue(!token.trusted(this, this));
         token.transferFrom(this, user1, 50);
         assertEq(token.balanceOf(user1), 50);
     }
@@ -231,7 +233,7 @@ contract DSTokenTest is DSTest {
         token.push(user1, burnAmount);
         assertEq(token.balanceOf(user1), burnAmount);
 
-        user1.doTrust(this, true);
+        user1.doApprove(this);
         token.burn(user1, burnAmount);
         assertEq(token.balanceOf(user1), 0);
     }
@@ -246,13 +248,13 @@ contract DSTokenTest is DSTest {
     }
     function testFailBurnGuyNoAuth() public {
         token.transfer(user2, 10);
-        user2.doTrust(user1, true);
+        user2.doApprove(user1);
         user1.doBurn(user2, 10);
     }
     function testBurnGuyAuth() public {
         token.transfer(user2, 10);
         token.setOwner(user1);
-        user2.doTrust(user1, true);
+        user2.doApprove(user1);
         user1.doBurn(user2, 10);
     }
 
@@ -270,12 +272,12 @@ contract DSTokenTest is DSTest {
         token.push(user1, 10);
     }
     function testFailPullWhenStopped() public {
-        token.trust(user1, true);
+        token.approve(user1);
         token.stop();
         user1.doPull(this, 10);
     }
     function testFailMoveWhenStopped() public {
-        token.trust(user1, true);
+        token.approve(user1);
         token.stop();
         token.move(this, user2, 10);
     }
@@ -293,7 +295,7 @@ contract DSTokenTest is DSTest {
     }
     function testFailTrustWhenStopped() public {
         token.stop();
-        token.trust(user1, true);
+        token.approve(user1);
     }
 
 
@@ -308,18 +310,18 @@ contract DSTokenTest is DSTest {
     }
 
     function testFailUntrustedTransferFrom() public {
-        assertTrue(!token.trusted(this, user2));
+        assertEq(token.allowance(this, user2), 0);
         user1.doTransferFrom(this, user2, 200);
     }
     function testTrusting() public {
-        assertTrue(!token.trusted(this, user2));
-        token.trust(user2, true);
-        assertTrue(token.trusted(this, user2));
-        token.trust(user2, false);
-        assertTrue(!token.trusted(this, user2));
+        assertEq(token.allowance(this, user2), 0);
+        token.approve(user2);
+        assertEq(token.allowance(this, user2), uint(-1));
+        token.approve(user2, 0);
+        assertEq(token.allowance(this, user2), 0);
     }
     function testTrustedTransferFrom() public {
-        token.trust(user1, true);
+        token.approve(user1);
         user1.doTransferFrom(this, user2, 200);
         assertEq(token.balanceOf(user2), 200);
     }
@@ -339,15 +341,33 @@ contract DSTokenTest is DSTest {
         user1.doPull(this, 1000);
     }
     function testPullWithTrust() public {
-        token.trust(user1, true);
+        token.approve(user1);
         user1.doPull(this, 1000);
     }
     function testFailMoveWithoutTrust() public {
         user1.doMove(this, user2, 1000);
     }
     function testMoveWithTrust() public {
-        token.trust(user1, true);
+        token.approve(user1);
         user1.doMove(this, user2, 1000);
+    }
+    function testApproveWillModifyAllowance() public {
+        assertEq(token.allowance(this, user1), 0);
+        assertEq(token.balanceOf(user1), 0);
+        token.approve(user1, 1000);
+        assertEq(token.allowance(this, user1), 1000);
+        user1.doPull(this, 500);
+        assertEq(token.balanceOf(user1), 500);
+        assertEq(token.allowance(this, user1), 500);
+    }
+    function testApproveWillNotModifyAllowance() public {
+        assertEq(token.allowance(this, user1), 0);
+        assertEq(token.balanceOf(user1), 0);
+        token.approve(user1);
+        assertEq(token.allowance(this, user1), uint(-1));
+        user1.doPull(this, 1000);
+        assertEq(token.balanceOf(user1), 1000);
+        assertEq(token.allowance(this, user1), uint(-1));
     }
 }
 
