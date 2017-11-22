@@ -171,7 +171,7 @@ contract DSTokenTest is DSTest {
     }
     function testTransferFromSelf() public {
         // you always trust yourself
-        assertTrue(!token.trusted(this, this));
+        assertTrue(token.trusted(this, this));
         token.transferFrom(this, user1, 50);
         assertEq(token.balanceOf(user1), 50);
     }

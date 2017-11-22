@@ -35,7 +35,7 @@ contract DSToken is DSTokenBase(0), DSStop {
     event Burn(address indexed guy, uint wad);
 
     function trusted(address src, address guy) public view returns (bool) {
-        return _approvals[src][guy] == uint(-1);
+        return src == guy || _approvals[src][guy] == uint(-1);
     }
     function trust(address guy, bool wat) public stoppable {
         if (wat) approve(guy, uint(-1));
@@ -51,7 +51,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         stoppable
         returns (bool)
     {
-        if (src != msg.sender && !trusted(src, msg.sender)){
+        if (!trusted(src, msg.sender)) {
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
@@ -85,7 +85,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         Mint(guy, wad);
     }
     function burn(address guy, uint wad) public auth stoppable {
-        if (guy != msg.sender && !trusted(guy, msg.sender)) {
+        if (!trusted(guy, msg.sender)) {
             _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
         }
 
