@@ -368,5 +368,13 @@ contract DSTokenTest is DSTest {
         assertEq(token.balanceOf(user1), 1000);
         assertEq(token.allowance(this, user1), uint(-1));
     }
+
+    function testFailTransferOnlyTrustedCaller() public {
+        // only the entity actually trusted should be able to call
+        // and move tokens.
+        token.push(user1, 1);
+        user1.doApprove(user2);
+        token.transferFrom(user1, user2, 1);
+    }
 }
 
