@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.23;
 
 import "ds-stop/stop.sol";
 
@@ -26,7 +26,7 @@ contract DSToken is DSTokenBase(0), DSStop {
     bytes32  public  symbol;
     uint256  public  decimals = 18; // standard token precision. override to customize
 
-    function DSToken(bytes32 symbol_) public {
+    constructor(bytes32 symbol_) public {
         symbol = symbol_;
     }
 
@@ -53,7 +53,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         _balances[src] = sub(_balances[src], wad);
         _balances[dst] = add(_balances[dst], wad);
 
-        Transfer(src, dst, wad);
+        emit Transfer(src, dst, wad);
 
         return true;
     }
@@ -77,7 +77,7 @@ contract DSToken is DSTokenBase(0), DSStop {
     function mint(address guy, uint wad) public auth stoppable {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
-        Mint(guy, wad);
+        emit Mint(guy, wad);
     }
     function burn(address guy, uint wad) public auth stoppable {
         if (guy != msg.sender && _approvals[guy][msg.sender] != uint(-1)) {
@@ -86,7 +86,7 @@ contract DSToken is DSTokenBase(0), DSStop {
 
         _balances[guy] = sub(_balances[guy], wad);
         _supply = sub(_supply, wad);
-        Burn(guy, wad);
+        emit Burn(guy, wad);
     }
 
     // Optional token name

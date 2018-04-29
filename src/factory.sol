@@ -11,6 +11,6 @@ contract DSTokenFactory {
         result = new DSToken(symbol);
         result.setName(name);
         result.setOwner(msg.sender);
-        LogMake(msg.sender, result);
+        emit LogMake(msg.sender, result);
     }
 }

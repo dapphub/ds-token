@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.23;
 
 import "ds-test/test.sol";
 
@@ -24,7 +24,7 @@ import "./token.sol";
 contract TokenUser {
     DSToken  token;
 
-    function TokenUser(DSToken token_) public {
+    constructor(DSToken token_) public {
         token = token_;
     }
 
@@ -127,7 +127,7 @@ contract DSTokenTest is DSTest {
 
     function testValidTransfers() public logs_gas {
         uint sentAmount = 250;
-        log_named_address("token11111", token);
+        emit log_named_address("token11111", token);
         token.transfer(user2, sentAmount);
         assertEq(token.balanceOf(user2), sentAmount);
         assertEq(token.balanceOf(this), initialBalance - sentAmount);
@@ -145,10 +145,10 @@ contract DSTokenTest is DSTest {
     }
 
     function testApproveSetsAllowance() public logs_gas {
-        log_named_address("Test", this);
-        log_named_address("Token", token);
-        log_named_address("Me", this);
-        log_named_address("User 2", user2);
+        emit log_named_address("Test", this);
+        emit log_named_address("Token", token);
+        emit log_named_address("Me", this);
+        emit log_named_address("User 2", user2);
         token.approve(user2, 25);
         assertEq(token.allowance(this, user2), 25);
     }

@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.23;
 
 import "erc20/erc20.sol";
 import "ds-math/math.sol";
@@ -25,7 +25,7 @@ contract DSTokenBase is ERC20, DSMath {
     mapping (address => uint256)                       _balances;
     mapping (address => mapping (address => uint256))  _approvals;
 
-    function DSTokenBase(uint supply) public {
+    constructor(uint supply) public {
         _balances[msg.sender] = supply;
         _supply = supply;
     }
@@ -55,7 +55,7 @@ contract DSTokenBase is ERC20, DSMath {
         _balances[src] = sub(_balances[src], wad);
         _balances[dst] = add(_balances[dst], wad);
 
-        Transfer(src, dst, wad);
+        emit Transfer(src, dst, wad);
 
         return true;
     }
@@ -63,7 +63,7 @@ contract DSTokenBase is ERC20, DSMath {
     function approve(address guy, uint wad) public returns (bool) {
         _approvals[msg.sender][guy] = wad;
 
-        Approval(msg.sender, guy, wad);
+        emit Approval(msg.sender, guy, wad);
 
         return true;
     }
