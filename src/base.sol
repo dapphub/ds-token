@@ -49,9 +49,11 @@ contract DSTokenBase is ERC20, DSMath {
         returns (bool)
     {
         if (src != msg.sender) {
+            require(_approvals[src][msg.sender] >= wad, "ds-token-insufficient-approval");
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
+        require(_balances[src] >= wad, "ds-token-insufficient-balance");
         _balances[src] = sub(_balances[src], wad);
         _balances[dst] = add(_balances[dst], wad);
 

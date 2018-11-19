@@ -47,9 +47,11 @@ contract DSToken is DSTokenBase(0), DSStop {
         returns (bool)
     {
         if (src != msg.sender && _approvals[src][msg.sender] != uint(-1)) {
+            require(_approvals[src][msg.sender] >= wad, "ds-token-insufficient-approval");
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
+        require(_balances[src] >= wad, "ds-token-insufficient-balance");
         _balances[src] = sub(_balances[src], wad);
         _balances[dst] = add(_balances[dst], wad);
 
@@ -81,9 +83,11 @@ contract DSToken is DSTokenBase(0), DSStop {
     }
     function burn(address guy, uint wad) public auth stoppable {
         if (guy != msg.sender && _approvals[guy][msg.sender] != uint(-1)) {
+            require(_approvals[guy][msg.sender] >= wad, "ds-token-insufficient-approval");
             _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
         }
 
+        require(_balances[guy] >= wad, "ds-token-insufficient-balance");
         _balances[guy] = sub(_balances[guy], wad);
         _supply = sub(_supply, wad);
         emit Burn(guy, wad);
