@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity >0.4.23;
 
 import "./token.sol";
 
@@ -11,6 +11,6 @@ contract DSTokenFactory {
         result = new DSToken(symbol);
         result.setName(name);
         result.setOwner(msg.sender);
-        emit LogMake(msg.sender, result);
+        emit LogMake(msg.sender, address(result));
     }
 }
