@@ -25,11 +25,11 @@ debit tokens at an address whilst simultaniously decreasing `totalSupply`
 
 ### Aliases
 
-#### `push`
+#### `pull`
 transfer an amount from `msg.sender` to a given address (requires trust or 
 approval)
 
-#### `pull`
+#### `push`
 transfer an amount from a given address to `msg.sender` (requires trust or 
 approval)
 
