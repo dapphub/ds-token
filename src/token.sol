@@ -18,27 +18,51 @@
 pragma solidity >=0.4.23;
 
 import "ds-stop/stop.sol";
+import "ds-math/math.sol";
 
-import "./base.sol";
-
-contract DSToken is DSTokenBase(0), DSStop {
-
+contract DSToken is DSStop, DSMath {
+    uint256                                            _supply;
+    mapping (address => uint256)                       _balances;
+    mapping (address => mapping (address => uint256))  _approvals;
     bytes32  public  symbol;
     uint256  public  decimals = 18; // standard token precision. override to customize
+    bytes32  public  name = "";     // Optional token name
 
     constructor(bytes32 symbol_) public {
         symbol = symbol_;
     }
 
+    event Approval(address indexed src, address indexed guy, uint wad);
+    event Transfer(address indexed src, address indexed dst, uint wad);
     event Mint(address indexed guy, uint wad);
     event Burn(address indexed guy, uint wad);
 
-    function approve(address guy) public stoppable returns (bool) {
-        return super.approve(guy, uint(-1));
+    function totalSupply() public view returns (uint) {
+        return _supply;
     }
 
-    function approve(address guy, uint wad) public stoppable returns (bool) {
-        return super.approve(guy, wad);
+    function balanceOf(address src) public view returns (uint) {
+        return _balances[src];
+    }
+
+    function allowance(address src, address guy) public view returns (uint) {
+        return _approvals[src][guy];
+    }
+
+    function approve(address guy) external stoppable returns (bool) {
+        return approve(guy, uint(-1));
+    }
+
+    function approve(address guy, uint wad) public returns (bool) {
+        _approvals[msg.sender][guy] = wad;
+
+        emit Approval(msg.sender, guy, wad);
+
+        return true;
+    }
+
+    function transfer(address dst, uint wad) external returns (bool) {
+        return transferFrom(msg.sender, dst, wad);
     }
 
     function transferFrom(address src, address dst, uint wad)
@@ -60,27 +84,33 @@ contract DSToken is DSTokenBase(0), DSStop {
         return true;
     }
 
-    function push(address dst, uint wad) public {
+    function push(address dst, uint wad) external {
         transferFrom(msg.sender, dst, wad);
     }
-    function pull(address src, uint wad) public {
+
+    function pull(address src, uint wad) external {
         transferFrom(src, msg.sender, wad);
     }
-    function move(address src, address dst, uint wad) public {
+
+    function move(address src, address dst, uint wad) external {
         transferFrom(src, dst, wad);
     }
 
-    function mint(uint wad) public {
+
+    function mint(uint wad) external {
         mint(msg.sender, wad);
     }
-    function burn(uint wad) public {
+
+    function burn(uint wad) external {
         burn(msg.sender, wad);
     }
+
     function mint(address guy, uint wad) public auth stoppable {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
         emit Mint(guy, wad);
     }
+
     function burn(address guy, uint wad) public auth stoppable {
         if (guy != msg.sender && _approvals[guy][msg.sender] != uint(-1)) {
             require(_approvals[guy][msg.sender] >= wad, "ds-token-insufficient-approval");
@@ -93,10 +123,7 @@ contract DSToken is DSTokenBase(0), DSStop {
         emit Burn(guy, wad);
     }
 
-    // Optional token name
-    bytes32   public  name = "";
-
-    function setName(bytes32 name_) public auth {
+    function setName(bytes32 name_) external auth {
         name = name_;
     }
 }
