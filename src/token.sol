@@ -49,11 +49,11 @@ contract DSToken is DSStop, DSMath {
         return _approvals[src][guy];
     }
 
-    function approve(address guy) external stoppable returns (bool) {
+    function approve(address guy) external returns (bool) {
         return approve(guy, uint(-1));
     }
 
-    function approve(address guy, uint wad) public returns (bool) {
+    function approve(address guy, uint wad) public stoppable returns (bool) {
         _approvals[msg.sender][guy] = wad;
 
         emit Approval(msg.sender, guy, wad);
