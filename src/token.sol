@@ -27,7 +27,7 @@ contract DSToken is DSMath, DSAuth {
     mapping (address => uint256)                      public  balanceOf;
     mapping (address => mapping (address => uint256)) public  allowance;
     bytes32                                           public  symbol;
-    uint256                                           public  decimals = 18; // standard token precision. override to customize
+    uint8                                             public  decimals = 18; // standard token precision. override to customize
     bytes32                                           public  name = "";     // Optional token name
 
     constructor(bytes32 symbol_) public {
