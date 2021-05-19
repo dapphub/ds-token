@@ -26,11 +26,12 @@ contract DSToken is DSMath, DSAuth {
     uint256                                           public  totalSupply;
     mapping (address => uint256)                      public  balanceOf;
     mapping (address => mapping (address => uint256)) public  allowance;
-    bytes32                                           public  symbol;
+    string                                            public  symbol;
     uint8                                             public  decimals = 18; // standard token precision. override to customize
-    bytes32                                           public  name = "";     // Optional token name
+    string                                            public  name = "";     // Optional token name
 
-    constructor(bytes32 symbol_) public {
+
+    constructor(string memory symbol_) public {
         symbol = symbol_;
     }
 
@@ -130,7 +131,8 @@ contract DSToken is DSMath, DSAuth {
         emit Start();
     }
 
-    function setName(bytes32 name_) external auth {
+
+    function setName(string memory name_) public auth {
         name = name_;
     }
 }
