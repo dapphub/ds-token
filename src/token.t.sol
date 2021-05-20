@@ -61,7 +61,7 @@ contract TokenUser {
         return token.balanceOf(who);
     }
 
-    function doSetName(bytes32 name) public {
+    function doSetName(string memory name) public {
         token.setName(name);
     }
 
