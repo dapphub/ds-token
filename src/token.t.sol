@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity >=0.4.23 <0.7.0;
+pragma solidity >=0.4.23;
 
 import "ds-test/test.sol";
 
@@ -315,7 +315,7 @@ contract DSTokenTest is DSTest {
     function testTrusting() public {
         assertEq(token.allowance(self, user2), 0);
         token.approve(user2);
-        assertEq(token.allowance(self, user2), uint(-1));
+        assertEq(token.allowance(self, user2), type(uint).max);
         token.approve(user2, 0);
         assertEq(token.allowance(self, user2), 0);
     }
@@ -363,10 +363,10 @@ contract DSTokenTest is DSTest {
         assertEq(token.allowance(self, user1), 0);
         assertEq(token.balanceOf(user1), 0);
         token.approve(user1);
-        assertEq(token.allowance(self, user1), uint(-1));
+        assertEq(token.allowance(self, user1), type(uint).max);
         TokenUser(user1).doPull(self, 1000);
         assertEq(token.balanceOf(user1), 1000);
-        assertEq(token.allowance(self, user1), uint(-1));
+        assertEq(token.allowance(self, user1), type(uint).max);
     }
 
     function testFailTransferOnlyTrustedCaller() public {
